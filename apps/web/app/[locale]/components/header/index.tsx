@@ -27,23 +27,31 @@ type HeaderProps = {
 export const Header = ({ dictionary }: HeaderProps) => {
   const navigationItems = [
     {
-      title: dictionary.web.header.home,
+      title: 'Home',
       href: '/',
       description: '',
     },
     {
-      title: dictionary.web.header.product.title,
-      description: dictionary.web.header.product.description,
+      title: 'Product',
+      description: 'Relationship intelligence platform for couples',
       items: [
         {
-          title: dictionary.web.header.product.pricing,
+          title: 'Demo',
+          href: '/demo',
+        },
+        {
+          title: 'Features',
+          href: '/#features',
+        },
+        {
+          title: 'Pricing',
           href: '/pricing',
         },
       ],
     },
     {
-      title: dictionary.web.header.blog,
-      href: '/blog',
+      title: 'About',
+      href: '/about',
       description: '',
     },
   ];
@@ -87,9 +95,9 @@ export const Header = ({ dictionary }: HeaderProps) => {
                                 {item.description}
                               </p>
                             </div>
-                            <Button size="sm" className="mt-10" asChild>
-                              <Link href="/contact">
-                                {dictionary.web.global.primaryCta}
+                            <Button size="sm" className="mt-10 ki-button-primary" asChild>
+                              <Link href="/demo">
+                                Try Ki Free
                               </Link>
                             </Button>
                           </div>
@@ -115,18 +123,16 @@ export const Header = ({ dictionary }: HeaderProps) => {
           </NavigationMenu>
         </div>
         <div className="flex items-center gap-2 lg:justify-center">
-          <Image
-            src={Logo}
-            alt="Logo"
-            width={24}
-            height={24}
-            className="dark:invert"
-          />
-          <p className="whitespace-nowrap font-semibold">next-forge</p>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">Ki</span>
+            </div>
+            <p className="whitespace-nowrap font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Ki</p>
+          </div>
         </div>
         <div className="flex w-full justify-end gap-4">
           <Button variant="ghost" className="hidden md:inline" asChild>
-            <Link href="/contact">{dictionary.web.header.contact}</Link>
+            <Link href="/contact">Contact</Link>
           </Button>
           <div className="hidden border-r md:inline" />
           <div className="hidden md:inline">
@@ -137,12 +143,12 @@ export const Header = ({ dictionary }: HeaderProps) => {
           </div>
           <Button variant="outline" asChild className="hidden md:inline">
             <Link href={`${env.NEXT_PUBLIC_APP_URL}/sign-in`}>
-              {dictionary.web.header.signIn}
+              Sign In
             </Link>
           </Button>
-          <Button asChild>
-            <Link href={`${env.NEXT_PUBLIC_APP_URL}/sign-up`}>
-              {dictionary.web.header.signUp}
+          <Button asChild className="ki-button-primary">
+            <Link href={`${env.NEXT_PUBLIC_APP_URL}/demo`}>
+              Try Ki Free
             </Link>
           </Button>
         </div>

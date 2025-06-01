@@ -1,5 +1,159 @@
 @import "@repo/design-system/styles/globals.css";
 
+/* Ki Design System - Emotional Color Palette */
+:root {
+  /* Primary Ki Colors */
+  --ki-primary-500: #5B6EE8;
+  --ki-purple-500: #A855F7;
+  --ki-pink-400: #F472B6;
+  --ki-pink-500: #EC4899;
+  --ki-blue-500: #3B82F6;
+  --ki-green-400: #34D399;
+  
+  /* Emotional States */
+  --ki-emotional-calm: #7DD3FC;
+  --ki-emotional-comfort: #FDBA74;
+  --ki-emotional-joy: #FDE047;
+  --ki-emotional-love: #F472B6;
+  --ki-emotional-trust: #34D399;
+  --ki-emotional-peace: #A7F3D0;
+  
+  /* Gradients */
+  --ki-gradient-primary: linear-gradient(135deg, var(--ki-primary-500) 0%, var(--ki-purple-500) 100%);
+  --ki-gradient-connection: linear-gradient(135deg, var(--ki-purple-500) 0%, var(--ki-pink-400) 100%);
+  --ki-gradient-growth: linear-gradient(135deg, var(--ki-green-400) 0%, var(--ki-blue-500) 100%);
+  --ki-gradient-warmth: linear-gradient(135deg, var(--ki-pink-500) 0%, var(--ki-emotional-comfort) 100%);
+}
+
+/* Ki Animation System */
+@keyframes ki-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes ki-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ki-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ki-gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ki Utility Classes */
+.ki-pulse {
+  animation: ki-pulse 2s ease-in-out infinite;
+}
+
+.ki-float {
+  animation: ki-float 3s ease-in-out infinite;
+}
+
+.ki-shimmer {
+  animation: ki-shimmer 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.ki-gradient-text {
+  background: var(--ki-gradient-connection);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ki-gradient-shift 3s ease infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* Responsive Design Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .ki-pulse,
+  .ki-float,
+  .ki-shimmer,
+  .ki-gradient-text,
+  .animate-fade-in,
+  .animate-spin-slow {
+    animation: none;
+  }
+}
+
+/* Enhanced Button Styles */
+.ki-button-primary {
+  background: var(--ki-gradient-connection);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ki-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.25);
+}
+
+.ki-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.ki-button-primary:hover::before {
+  left: 100%;
+}
+
 .shiki {
   background-color: var(--shiki-light-bg);
   color: var(--shiki-light);
