@@ -1,0 +1,395 @@
+---
+title: Development Setup
+description: Complete setup guide for Ki's relationship intelligence platform
+---
+
+# Development Setup
+
+Get started building with Ki's relationship intelligence platform. This guide will walk you through setting up the complete development environment.
+
+## Prerequisites
+
+<Tabs>
+<Tab title="System Requirements">
+
+### Required Software
+- **Node.js**: 18.17.0 or higher (recommend using nvm)
+- **Python**: 3.11+ for AI engine
+- **PostgreSQL**: 14+ or use Neon serverless
+- **Redis**: 6+ for caching and real-time features
+- **Docker**: Latest version for containerized development
+
+### Package Managers
+- **pnpm**: 10.11.0 (preferred for Next Forge monorepo)
+- **pip**: Latest for Python dependencies
+- **Docker Compose**: For orchestrating services
+
+</Tab>
+<Tab title="Development Tools">
+
+### Essential Tools
+- **Git**: Latest version with submodule support
+- **VS Code**: Recommended with TypeScript and Python extensions
+- **Ultracite**: Built-in linting (Biome-based, faster than ESLint)
+- **Prisma Studio**: Database GUI for development
+- **LangSmith**: AI pipeline monitoring and debugging
+
+### Optional Tools
+- **Postman/Insomnia**: API testing
+- **pgAdmin**: Advanced PostgreSQL management
+- **Redis CLI**: Redis debugging and monitoring
+
+</Tab>
+<Tab title="Services">
+
+### External Services (Development)
+- **OpenAI API**: GPT-4 access for AI processing
+- **Anthropic API**: Claude access for empathy generation
+- **Hume AI**: Emotional voice analysis
+- **Clerk**: Authentication and user management
+
+### Production Services
+- **Vercel**: Frontend deployment and edge functions
+- **Neon**: Serverless PostgreSQL
+- **Upstash**: Serverless Redis
+- **Sentry**: Error monitoring and performance tracking
+
+</Tab>
+</Tabs>
+
+## Repository Setup
+
+<Info>
+Ki uses a sophisticated submodule architecture with automated git operations. The main repository coordinates all development across multiple specialized repositories.
+</Info>
+
+### Quick Setup (Recommended)
+
+```bash
+# Clone with all submodules
+git clone --recurse-submodules https://github.com/sinhadanish/ki-startup-command-center.git
+cd ki-startup-command-center
+
+# Complete setup (submodules + Ki platform + automation)
+make setup
+
+# Start development environment
+make dev
+```
+
+### Manual Setup
+
+```bash
+# Clone repository
+git clone https://github.com/sinhadanish/ki-startup-command-center.git
+cd ki-startup-command-center
+
+# Initialize submodules
+git submodule update --init --recursive
+
+# Setup Ki platform specifically
+make ki-setup
+
+# Start services
+make dev
+```
+
+## Environment Configuration
+
+### Environment Variables Setup
+
+Create environment files in the appropriate locations:
+
+<CodeGroup>
+```bash .env.local (Ki Platform Root)
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/ki_development"
+
+# Authentication (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
+
+# AI Services
+OPENAI_API_KEY="sk-..."
+ANTHROPIC_API_KEY="sk-ant-..."
+HUME_API_KEY="..."
+
+# Redis
+REDIS_URL="redis://localhost:6379"
+
+# Environment
+NODE_ENV="development"
+```
+
+```python .env (AI Engine)
+# AI APIs
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+HUME_API_KEY=...
+
+# Database
+DATABASE_URL=postgresql://username:password@localhost:5432/ki_development
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# LangSmith (Optional)
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+LANGCHAIN_API_KEY=...
+```
+</CodeGroup>
+
+### Database Setup
+
+#### Option 1: Local PostgreSQL
+```bash
+# Install PostgreSQL
+brew install postgresql
+
+# Start PostgreSQL service
+brew services start postgresql
+
+# Create database
+createdb ki_development
+
+# Run migrations
+cd submodules/product/ki-platform
+pnpm db:push
+```
+
+#### Option 2: Neon Serverless (Recommended)
+1. Create account at [neon.tech](https://neon.tech)
+2. Create new database project
+3. Copy connection string to `DATABASE_URL`
+4. Run migrations: `pnpm db:push`
+
+### Redis Setup
+
+#### Option 1: Local Redis
+```bash
+# Install Redis
+brew install redis
+
+# Start Redis service
+brew services start redis
+
+# Test connection
+redis-cli ping
+```
+
+#### Option 2: Upstash (Production)
+1. Create account at [upstash.com](https://upstash.com)
+2. Create Redis database
+3. Copy connection string to `REDIS_URL`
+
+## Development Environment
+
+### Service URLs
+After running `make dev`, access these services:
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Ki App** | http://localhost:3001 | Main relationship intelligence platform |
+| **Marketing Site** | http://localhost:3000 | Next.js website |
+| **AI Engine API** | http://localhost:8000 | FastAPI with LangGraph backend |
+| **n8n Automation** | http://localhost:5678 | Business automation workflows |
+| **Docs** | http://localhost:3002 | Platform documentation |
+
+### Essential Commands
+
+#### Git Automation (Recommended)
+```bash
+make git-status  # Check status across all repositories
+make git-push    # Push changes to all repositories  
+make git-pull    # Pull latest from all repositories
+```
+
+#### Development
+```bash
+make dev         # Start complete development environment
+make stop        # Stop all services
+make clean       # Clean up everything
+```
+
+#### Ki Platform Specific
+```bash
+cd submodules/product/ki-platform
+
+# Next Forge commands
+pnpm dev         # Start all Next.js apps
+pnpm build       # Build for production
+pnpm test        # Run test suite
+pnpm lint        # Ultracite linting
+pnpm typecheck   # TypeScript validation
+
+# Database commands
+pnpm db:push     # Push schema changes
+pnpm db:studio   # Open Prisma Studio
+pnpm db:generate # Generate Prisma client
+```
+
+## Architecture Overview
+
+### Repository Structure
+
+```
+ki-startup-command-center/           # Main coordination repository
+├── submodules/
+│   ├── product/ki-platform/         # Main Ki platform (Next Forge monorepo)
+│   ├── business/                    # Business operations and data room
+│   └── automation/                  # n8n workflows and business automation
+├── config/                          # Environment and service configuration
+├── scripts/                         # Development and deployment automation
+└── docker-compose.yml              # Complete service orchestration
+```
+
+### Ki Platform Structure
+
+```
+submodules/product/ki-platform/
+├── apps/
+│   ├── web/                         # Marketing website (Next.js 15)
+│   ├── app/                         # Ki relationship app (Next.js 15)  
+│   ├── docs/                        # Documentation site (Next.js 15)
+│   ├── api/                         # API backend (Next.js API routes)
+│   ├── email/                       # Email templates (React Email)
+│   ├── storybook/                   # Component development
+│   └── langgraph-backend/           # AI engine (Python + FastAPI)
+├── packages/
+│   ├── ui/                          # Shared React components
+│   ├── database/                    # Prisma schema and utilities
+│   ├── auth/                        # Clerk authentication
+│   ├── email/                       # Email sending utilities
+│   └── typescript-config/           # Shared TypeScript configs
+└── docs/                           # Platform documentation
+```
+
+## Verification Steps
+
+### 1. Verify Environment Setup
+
+```bash
+# Check Node.js version
+node --version  # Should be 18.17.0+
+
+# Check Python version  
+python --version  # Should be 3.11+
+
+# Check pnpm
+pnpm --version  # Should be 10.11.0+
+
+# Check Docker
+docker --version
+docker-compose --version
+```
+
+### 2. Test Database Connection
+
+```bash
+cd submodules/product/ki-platform
+
+# Test database connection
+pnpm db:studio
+
+# Should open Prisma Studio in browser
+```
+
+### 3. Test AI Services
+
+```bash
+# Test OpenAI connection
+curl -H "Authorization: Bearer $OPENAI_API_KEY" \
+     https://api.openai.com/v1/models
+
+# Test Anthropic connection  
+curl -H "x-api-key: $ANTHROPIC_API_KEY" \
+     https://api.anthropic.com/v1/messages
+```
+
+### 4. Verify Complete Setup
+
+```bash
+# Start all services
+make dev
+
+# Check service health
+curl http://localhost:3001/health  # Ki App
+curl http://localhost:8000/health  # AI Engine
+curl http://localhost:3000         # Marketing Site
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Port Conflicts
+```bash
+# Check what's using ports
+lsof -i :3000  # Marketing site
+lsof -i :3001  # Ki app
+lsof -i :8000  # AI engine
+
+# Kill process if needed
+kill -9 <PID>
+```
+
+#### Database Connection Issues
+```bash
+# Reset database
+cd submodules/product/ki-platform
+pnpm db:reset
+
+# Regenerate client
+pnpm db:generate
+```
+
+#### Node Version Issues
+```bash
+# Using nvm (recommended)
+nvm install 18.17.0
+nvm use 18.17.0
+
+# Verify version
+node --version
+```
+
+#### Package Installation Issues
+```bash
+# Clear pnpm cache
+pnpm store prune
+
+# Clean install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+### Getting Help
+
+<CardGroup cols={2}>
+<Card title="GitHub Issues" href="https://github.com/sinhadanish/ki-startup-command-center/issues" icon="github">
+  Report bugs and ask technical questions
+</Card>
+<Card title="Development Discord" href="#" icon="discord">
+  Real-time development chat and support
+</Card>
+<Card title="Documentation" href="/docs/development/architecture" icon="book">
+  Detailed technical architecture guide
+</Card>
+<Card title="Contributing Guide" href="/docs/development/contributing" icon="code">
+  Learn how to contribute to Ki platform
+</Card>
+</CardGroup>
+
+## Next Steps
+
+Once your environment is set up:
+
+1. **Explore the Architecture**: [Development Architecture](/docs/development/architecture)
+2. **Start Contributing**: [Contributing Guide](/docs/development/contributing)
+3. **Understand Ki's Design**: [Technical Architecture](/docs/ki/technical-architecture)
+4. **Build Features**: [User Experience Guide](/docs/ki/user-experience)
+
+<Check>
+Your Ki development environment is now ready! Start building the future of relationship intelligence.
+</Check>

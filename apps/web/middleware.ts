@@ -25,12 +25,13 @@ const securityHeaders = env.FLAGS_SECRET
   : noseconeMiddleware(noseconeOptions);
 
 const middleware = authMiddleware(async (_auth, request) => {
-  const i18nResponse = internationalizationMiddleware(
-    request as unknown as NextRequest
-  );
-  if (i18nResponse) {
-    return i18nResponse;
-  }
+  // Temporarily disable i18n middleware to fix 500 error
+  // const i18nResponse = internationalizationMiddleware(
+  //   request as unknown as NextRequest
+  // );
+  // if (i18nResponse) {
+  //   return i18nResponse;
+  // }
 
   if (!env.ARCJET_KEY) {
     return securityHeaders();

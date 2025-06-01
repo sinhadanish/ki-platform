@@ -1,19 +1,15 @@
 'use client';
 
 import type { Dictionary } from '@repo/internationalization';
-import { Brain, Heart, MessageCircle, Shield, Users, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Brain, Heart, MessageCircle, Shield, Users, Zap, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 type FeaturesProps = {
   dictionary: Dictionary;
 };
 
-export const Features = ({ dictionary }: FeaturesProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+const Features = ({ dictionary }: FeaturesProps) => {
 
   const features = [
     {
@@ -61,85 +57,113 @@ export const Features = ({ dictionary }: FeaturesProps) => {
   ];
 
   return (
-    <div className="w-full py-20 lg:py-40 bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col gap-16">
-          {/* Section Header */}
-          <div className={`flex flex-col items-center text-center gap-6 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-4 py-2 text-sm font-medium text-purple-700 dark:text-purple-300 border border-purple-200/50 dark:border-purple-700/50">
-              <Brain className="h-4 w-4" />
-              Relationship Intelligence Technology
-            </div>
-            <h2 className="max-w-4xl text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
-              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                Human-AI-Human
-              </span>
-              <br />
-              <span className="text-gray-900 dark:text-white">
-                Framework
-              </span>
-            </h2>
-            <p className="max-w-3xl text-xl leading-relaxed text-gray-600 dark:text-gray-300 md:text-2xl">
-              The world's first relationship platform designed for two partners simultaneously. Advanced AI that understands both perspectives while maintaining privacy and trust.
-            </p>
-          </div>
+    <section className="relative py-24 overflow-hidden">
+      {/* Background with gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white" />
+      
+      {/* Animated decorative orbs */}
+      <motion.div
+        className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-r from-purple-500/20 to-pink-400/20 rounded-full blur-3xl"
+        animate={{
+          x: [0, 30, 0],
+          y: [0, -20, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      <motion.div
+        className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-green-400/20 rounded-full blur-3xl"
+        animate={{
+          x: [0, -40, 0],
+          y: [0, 30, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      <div className="container relative mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full mb-6"
+          >
+            <Sparkles className="w-4 h-4 text-purple-500" />
+            <span className="text-sm font-semibold text-gray-700">
+              Comprehensive Support
+            </span>
+          </motion.div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
+            Why Choose Ki?
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Experience the future of emotional support with cutting-edge AI that truly understands you
+          </p>
+        </motion.div>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={feature.title}
-                  className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${feature.bgGradient} p-8 border border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-500 hover:shadow-xl hover:scale-105 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  {/* Gradient overlay on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group relative"
+            >
+              <div className="relative p-8 bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden">
+                {/* Gradient border effect on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                <div className="absolute inset-[1px] bg-white rounded-2xl" />
+                
+                {/* Background gradient decoration */}
+                <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${feature.bgGradient} rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-300`} />
+                
+                <div className="relative">
+                  {/* Icon with gradient background */}
+                  <motion.div 
+                    className={`w-16 h-16 mb-6 rounded-xl bg-gradient-to-r ${feature.gradient} p-0.5`}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
+                      <feature.icon 
+                        className="w-8 h-8 text-gray-700" 
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                  </motion.div>
                   
-                  {/* Icon */}
-                  <div className={`relative mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient}`}>
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="relative space-y-4">
-                    <h3 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                  
-                  {/* Floating background element */}
-                  <div className={`absolute -top-4 -right-4 h-24 w-24 rounded-full bg-gradient-to-br ${feature.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-500`} />
+                  <h3 className="text-xl font-semibold mb-3 text-gray-800">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-
-          {/* Call to Action */}
-          <div className={`flex flex-col items-center text-center gap-6 transform transition-all duration-1000 delay-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
-            <div className="rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-8 border border-purple-200/50 dark:border-purple-700/50 max-w-2xl">
-              <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-                Ready to transform your relationship?
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Join thousands of couples already strengthening their connection with Ki's relationship intelligence.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="ki-button-primary px-6 py-3 rounded-lg font-medium text-white transition-all duration-300 hover:shadow-lg">
-                  Start Free Demo
-                </button>
-                <button className="px-6 py-3 rounded-lg font-medium border-2 border-purple-200 hover:border-purple-400 dark:border-purple-700 dark:hover:border-purple-500 transition-all duration-300">
-                  Learn More
-                </button>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          ))}
         </div>
+
       </div>
-    </div>
+    </section>
   );
 };
+
+export { Features };

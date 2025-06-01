@@ -46,39 +46,52 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --success: oklch(50.8% 0.118 165.612);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* Ki Warm Midnight Theme - Rich, relationship-focused dark mode */
+  --background: oklch(0.08 0.015 280);        /* Deep warm purple-blue base */
+  --foreground: oklch(0.92 0.008 280);        /* Soft warm white */
+  --card: oklch(0.12 0.015 280);              /* Elevated surface with warmth */
+  --card-foreground: oklch(0.92 0.008 280);   /* Consistent foreground */
+  --popover: oklch(0.14 0.015 280);           /* Higher elevation surface */
+  --popover-foreground: oklch(0.92 0.008 280); /* Consistent foreground */
+  
+  /* Ki Brand Integration */
+  --primary: oklch(0.65 0.2 280);             /* Ki purple with warmth */
+  --primary-foreground: oklch(0.98 0.005 280); /* Ultra-light on primary */
+  --secondary: oklch(0.18 0.02 280);          /* Darker secondary surface */
+  --secondary-foreground: oklch(0.85 0.012 280); /* Softer secondary text */
+  
+  /* Improved Hierarchy */
+  --muted: oklch(0.16 0.018 280);             /* Muted backgrounds with subtle color */
+  --muted-foreground: oklch(0.65 0.015 280);  /* More readable muted text */
+  --accent: oklch(0.22 0.025 320);            /* Accent with slight pink hint */
+  --accent-foreground: oklch(0.88 0.012 320); /* Accent text */
+  
+  /* Enhanced Interaction States */
+  --destructive: oklch(0.55 0.15 25);         /* Warmer destructive red */
+  --destructive-foreground: oklch(0.95 0.02 25); /* Light destructive text */
+  --success: oklch(0.65 0.12 150);            /* Warmer success green */
+  
+  /* Improved Borders & Inputs */
+  --border: oklch(0.22 0.02 280);             /* Subtle purple-tinted borders */
+  --input: oklch(0.15 0.018 280);             /* Input backgrounds with warmth */
+  --ring: oklch(0.55 0.15 280);               /* Ki purple focus rings */
+  
+  /* Enhanced Chart Colors (Ki Emotional Palette) */
+  --chart-1: oklch(0.65 0.2 280);             /* Ki primary purple */
+  --chart-2: oklch(0.70 0.15 320);            /* Pink connection */
+  --chart-3: oklch(0.68 0.12 200);            /* Trust blue */
+  --chart-4: oklch(0.72 0.15 150);            /* Growth green */
+  --chart-5: oklch(0.75 0.18 50);             /* Joy/comfort yellow-orange */
+  
+  /* Warm Sidebar */
+  --sidebar: oklch(0.10 0.018 280);           /* Warm sidebar background */
+  --sidebar-foreground: oklch(0.88 0.01 280); /* Soft sidebar text */
+  --sidebar-primary: oklch(0.65 0.2 280);     /* Ki purple sidebar accent */
+  --sidebar-primary-foreground: oklch(0.98 0.005 280); /* Light sidebar accent text */
+  --sidebar-accent: oklch(0.18 0.02 280);     /* Sidebar accent backgrounds */
+  --sidebar-accent-foreground: oklch(0.85 0.012 280); /* Sidebar accent text */
+  --sidebar-border: oklch(0.20 0.02 280);     /* Subtle sidebar borders */
+  --sidebar-ring: oklch(0.55 0.15 280);       /* Sidebar focus rings */
 }
 
 @theme inline {

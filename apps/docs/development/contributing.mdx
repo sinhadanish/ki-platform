@@ -1,0 +1,550 @@
+---
+title: Contributing Guide
+description: How to contribute to Ki's relationship intelligence platform
+---
+
+# Contributing Guide
+
+Welcome to Ki's development community! We're building the future of relationship intelligence, and we'd love your help in strengthening human connections through technology.
+
+## Getting Started
+
+### Prerequisites
+
+Before contributing, ensure you have:
+
+1. **Development Environment**: Complete the [setup guide](/docs/development/setup)
+2. **Understanding**: Familiarity with [Ki's architecture](/docs/development/architecture)
+3. **Values Alignment**: Commitment to privacy-first, empathetic technology
+
+### Code of Conduct
+
+Ki is dedicated to creating a safe, inclusive environment where all contributors can help build technology that strengthens human relationships.
+
+#### Our Values
+- **Privacy First**: Relationship data is sacred and must be protected
+- **Empathy Driven**: All features should enhance human connection
+- **Quality Focused**: Relationship intelligence requires precision and care
+- **Inclusive Design**: Technology should work for all relationship types and styles
+
+## Development Process
+
+### 1. Issue Selection
+
+<Tabs>
+<Tab title="Finding Issues">
+
+#### Issue Labels
+- `good-first-issue`: Perfect for new contributors
+- `ai-enhancement`: Improve LangGraph workflows and emotional intelligence
+- `ui-ux`: Enhance emotional adaptation and accessibility
+- `backend`: Optimize performance and database design
+- `security-privacy`: Strengthen encryption and privacy protection
+
+#### Priority Levels
+- `critical`: Security, privacy, or safety issues
+- `high`: Core relationship intelligence features
+- `medium`: Performance improvements and enhancements
+- `low`: Documentation and developer experience
+
+</Tab>
+<Tab title="Issue Process">
+
+#### Before Starting Work
+1. **Comment on Issue**: Express interest and ask questions
+2. **Get Assignment**: Wait for maintainer assignment (prevents conflicts)
+3. **Understand Requirements**: Clarify scope and acceptance criteria
+4. **Plan Approach**: Discuss technical approach if significant changes
+
+#### Issue Discussion
+```markdown
+Hi! I'd like to work on this issue. 
+
+**My understanding:**
+- [Brief description of the problem/feature]
+
+**Proposed approach:**
+- [High-level technical approach]
+
+**Questions:**
+- [Any clarifications needed]
+
+**Timeline:** I can complete this within [X days/weeks]
+```
+
+</Tab>
+</Tabs>
+
+### 2. Development Workflow
+
+#### Branch Naming Convention
+```bash
+# Feature branches
+git checkout -b feature/relationship-memory-enhancement
+
+# Bug fixes  
+git checkout -b fix/voice-processing-latency
+
+# Documentation
+git checkout -b docs/api-reference-update
+
+# Security/Privacy
+git checkout -b security/encryption-upgrade
+```
+
+#### Commit Message Standards
+```bash
+# Format: type(scope): description
+feat(ai): add empathy scoring to relationship analysis
+fix(voice): reduce latency in emotional prosody detection
+docs(api): update authentication endpoint examples
+security(privacy): implement partner data separation
+```
+
+#### Development Commands
+```bash
+# Check status across all repos
+make git-status
+
+# Start development environment
+make dev
+
+# Run tests before committing
+cd submodules/product/ki-platform
+pnpm test
+pnpm lint
+pnpm typecheck
+
+# Push all changes
+make git-push
+```
+
+### 3. Code Quality Standards
+
+#### Privacy & Security Review
+All code must pass privacy and security review:
+
+```typescript
+// ✅ Good: Privacy-separated partner data
+function processPartnerInputs(partnerAData: PartnerInput, partnerBData: PartnerInput) {
+  const separatedData = {
+    partner_a: encryptPartnerData('partner_a', partnerAData),
+    partner_b: encryptPartnerData('partner_b', partnerBData)
+  }
+  
+  // Only merge with explicit consent
+  if (bothPartnersConsent(partnerAData.userId, partnerBData.userId)) {
+    return createSharedContext(separatedData)
+  }
+  
+  return separatedData
+}
+
+// ❌ Bad: Mixed partner data without consent
+function processInputs(allData: any[]) {
+  return allData.reduce((acc, data) => ({ ...acc, ...data }), {})
+}
+```
+
+#### AI Ethics Guidelines
+```python
+# ✅ Good: Empathetic, non-judgmental AI responses
+def generate_empathetic_response(emotional_state, content):
+    """Generate response that validates both partners' experiences"""
+    response = f"I hear that you're feeling {emotional_state.primary_emotion}. "
+    response += validate_partner_perspective(content)
+    response += suggest_growth_opportunity(content)
+    return response
+
+# ❌ Bad: Judgmental or clinical responses  
+def generate_response(content):
+    return "You need to communicate better."
+```
+
+#### Performance Requirements
+- **Voice Response**: Under 100ms for emotional acknowledgment
+- **Full Analysis**: Under 2 seconds for complete relationship insight
+- **Memory Updates**: Background processing without blocking UI
+- **Database Queries**: Under 500ms for relationship context retrieval
+
+## Contribution Areas
+
+### AI Enhancement
+
+<CardGroup cols={2}>
+<Card title="LangGraph Workflows" icon="diagram-project">
+  Improve relationship processing nodes and emotional intelligence
+</Card>
+<Card title="Pattern Recognition" icon="search">
+  Enhance detection of relationship dynamics and growth opportunities
+</Card>
+<Card title="Empathy Generation" icon="heart">
+  Improve AI's emotional understanding and response quality
+</Card>
+<Card title="Crisis Detection" icon="exclamation-triangle">
+  Strengthen safety monitoring and professional referral systems
+</Card>
+</CardGroup>
+
+#### Example AI Contribution
+```python
+# Contributing a new relationship pattern detector
+def detect_appreciation_patterns(conversation_history: List[Conversation]) -> AppreciationAnalysis:
+    """Detect expressions of appreciation and gratitude patterns"""
+    
+    appreciation_indicators = [
+        "thank you", "grateful", "appreciate", "love when you",
+        "means a lot", "proud of you", "notice how"
+    ]
+    
+    pattern_analysis = {
+        'frequency': calculate_appreciation_frequency(conversation_history),
+        'reciprocity': analyze_mutual_appreciation(conversation_history),
+        'specific_behaviors': identify_appreciated_behaviors(conversation_history),
+        'growth_opportunities': suggest_appreciation_improvements(conversation_history)
+    }
+    
+    return AppreciationAnalysis(pattern_analysis)
+```
+
+### UI/UX Development
+
+#### Emotional Adaptation Contributions
+```typescript
+// Contributing new emotional state adaptations
+export const emotionalStateThemes = {
+  overwhelmed: {
+    colors: {
+      primary: '#8B5CF6',    // Calming purple
+      background: '#FAF5FF', // Very light purple
+      accent: '#A78BFA'      // Soft purple accent
+    },
+    animations: {
+      duration: 'slow',       // Slower, calming animations
+      easing: 'ease-out',     // Gentle transitions
+      breathingRate: 4000     // 4-second breathing guide
+    },
+    layout: {
+      spacing: 'relaxed',     // More whitespace
+      fontSize: 'large',      // Easier to read
+      voicePrompt: 'gentle'   // Softer voice prompts
+    }
+  }
+}
+
+// Contributing accessibility improvements
+export function useVoiceAccessibility() {
+  const [voiceEnabled, setVoiceEnabled] = useState(true)
+  const [textFallback, setTextFallback] = useState(false)
+  
+  // Auto-enable text fallback for accessibility
+  useEffect(() => {
+    const hasVoiceImpairment = checkAccessibilityPreferences()
+    if (hasVoiceImpairment) {
+      setTextFallback(true)
+    }
+  }, [])
+  
+  return { voiceEnabled, textFallback, setVoiceEnabled, setTextFallback }
+}
+```
+
+### Backend Development
+
+#### Performance Optimization
+```typescript
+// Contributing caching improvements
+export class RelationshipContextCache {
+  private redis: Redis
+  
+  async cacheRelationshipContext(relationshipId: string, context: RelationshipContext) {
+    const cacheKey = `relationship:${relationshipId}:context`
+    const ttl = 3600 // 1 hour
+    
+    // Cache with compression for large context objects
+    const compressed = await this.compressContext(context)
+    await this.redis.setex(cacheKey, ttl, compressed)
+  }
+  
+  async getCachedContext(relationshipId: string): Promise<RelationshipContext | null> {
+    const cacheKey = `relationship:${relationshipId}:context`
+    const cached = await this.redis.get(cacheKey)
+    
+    if (cached) {
+      return await this.decompressContext(cached)
+    }
+    
+    return null
+  }
+}
+```
+
+#### Database Schema Contributions
+```sql
+-- Contributing new relationship intelligence tables
+CREATE TABLE relationship_milestones (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    relationship_id UUID NOT NULL REFERENCES relationships(id),
+    milestone_type VARCHAR(50) NOT NULL, -- 'first_resolution', 'appreciation_increase', etc.
+    milestone_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    significance_score INTEGER NOT NULL CHECK (significance_score >= 1 AND significance_score <= 10),
+    description TEXT,
+    celebration_sent BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_relationship_milestones_relationship ON relationship_milestones(relationship_id);
+CREATE INDEX idx_relationship_milestones_date ON relationship_milestones(milestone_date DESC);
+```
+
+## Testing Requirements
+
+### Test Coverage Standards
+
+<Tabs>
+<Tab title="Unit Tests">
+
+#### Component Testing
+```typescript
+// test/components/EmotionalButton.test.tsx
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { EmotionalButton } from '../EmotionalButton'
+import { EmotionalStateProvider } from '@repo/ui/emotional-context'
+
+describe('EmotionalButton', () => {
+  it('adapts color based on emotional state', () => {
+    render(
+      <EmotionalStateProvider initialState="stressed">
+        <EmotionalButton>Click me</EmotionalButton>
+      </EmotionalStateProvider>
+    )
+    
+    const button = screen.getByRole('button')
+    expect(button).toHaveClass('bg-coral-500')
+  })
+  
+  it('maintains accessibility standards', () => {
+    render(<EmotionalButton>Click me</EmotionalButton>)
+    
+    const button = screen.getByRole('button')
+    expect(button).toHaveAttribute('aria-label')
+    expect(button).toBeEnabled()
+  })
+})
+```
+
+#### Required Coverage
+- **UI Components**: 90%+ coverage for relationship-critical components
+- **AI Processing**: 85%+ coverage for empathy and pattern recognition
+- **Privacy Functions**: 100% coverage for encryption and consent logic
+- **Database Operations**: 95%+ coverage for relationship data handling
+
+</Tab>
+<Tab title="Integration Tests">
+
+#### AI Pipeline Testing
+```python
+# test/ai/test_empathy_generation.py
+import pytest
+from src.ai.empathy_generator import EmpathyGenerator
+
+@pytest.mark.asyncio
+async def test_empathy_generation_quality():
+    """Test that empathy generation meets quality standards"""
+    
+    empathy_gen = EmpathyGenerator()
+    
+    input_data = {
+        "partner_a": "I feel unheard when we discuss finances",
+        "partner_b": "I think I communicate clearly about money",
+        "emotional_states": {
+            "partner_a": {"primary": "frustrated", "intensity": 0.7},
+            "partner_b": {"primary": "confused", "intensity": 0.5}
+        }
+    }
+    
+    result = await empathy_gen.generate_responses(input_data)
+    
+    # Quality assertions
+    assert "I hear" in result["partner_a_response"].lower()
+    assert "understand" in result["partner_b_response"].lower()
+    assert result["empathy_score"] >= 0.8
+    assert len(result["shared_insights"]) > 0
+```
+
+</Tab>
+<Tab title="E2E Tests">
+
+#### Privacy Protection Testing
+```typescript
+// test/e2e/privacy-protection.spec.ts
+import { test, expect } from '@playwright/test'
+
+test('partner data remains private during conversation', async ({ browser }) => {
+  // Create two browser contexts for two partners
+  const partnerAContext = await browser.newContext()
+  const partnerBContext = await browser.newContext()
+  
+  const partnerAPage = await partnerAContext.newPage()
+  const partnerBPage = await partnerBContext.newPage()
+  
+  // Partner A shares private information
+  await partnerAPage.goto('/app/conversation/private-mode')
+  await partnerAPage.fill('[data-testid="private-input"]', 'My secret concern about money')
+  await partnerAPage.click('[data-testid="submit-private"]')
+  
+  // Partner B should not see Partner A's private input
+  await partnerBPage.goto('/app/conversation')
+  const privateContent = await partnerBPage.locator('[data-testid="conversation-history"]').textContent()
+  
+  expect(privateContent).not.toContain('My secret concern about money')
+  
+  // But both should see shared insights (with consent)
+  await expect(partnerAPage.locator('[data-testid="shared-insights"]')).toBeVisible()
+  await expect(partnerBPage.locator('[data-testid="shared-insights"]')).toBeVisible()
+})
+```
+
+</Tab>
+</Tabs>
+
+## Pull Request Process
+
+### PR Requirements Checklist
+
+#### Before Submitting
+- [ ] **Tests Added**: New functionality has comprehensive tests
+- [ ] **Privacy Review**: No relationship data privacy violations
+- [ ] **Performance Check**: Response times meet requirements
+- [ ] **Documentation Updated**: Code and user documentation updated
+- [ ] **Accessibility**: UI changes meet accessibility standards
+- [ ] **Security Review**: No security vulnerabilities introduced
+
+#### PR Template
+```markdown
+## Description
+Brief description of changes and motivation.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change fixing an issue)
+- [ ] New feature (non-breaking change adding functionality)
+- [ ] Breaking change (fix or feature causing existing functionality to change)
+- [ ] Documentation update
+
+## Testing
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] E2E tests pass
+- [ ] Manual testing completed
+
+## Privacy & Security
+- [ ] No partner data is mixed without consent
+- [ ] Encryption is properly implemented
+- [ ] Access controls are respected
+- [ ] No sensitive data in logs
+
+## Screenshots (if applicable)
+[Add screenshots for UI changes]
+
+## Additional Notes
+[Any additional context or notes for reviewers]
+```
+
+### Review Process
+
+#### Automated Checks
+- **Tests**: All test suites must pass
+- **Linting**: Ultracite linting must pass
+- **Type Safety**: TypeScript compilation with no errors
+- **Security**: Automated security scanning
+- **Performance**: Response time benchmarks
+
+#### Human Review Requirements
+- **Privacy Review**: All relationship data handling reviewed
+- **AI Ethics Review**: Empathetic and non-judgmental responses
+- **Security Review**: Encryption and access control validation
+- **Code Quality**: Maintainable, well-documented code
+
+#### Approval Process
+1. **Automated Checks**: Must pass all automated requirements
+2. **Peer Review**: At least one team member approval
+3. **Privacy Review**: Privacy officer approval for data handling changes
+4. **Final Approval**: Maintainer approval before merge
+
+## Community Guidelines
+
+### Communication
+
+#### GitHub Discussions
+- **Technical Questions**: Architecture and implementation discussions
+- **Feature Requests**: Propose new relationship intelligence capabilities
+- **AI Ethics**: Discuss empathy, privacy, and safety considerations
+
+#### Discord Community
+- **Real-time Help**: Quick questions and pair programming
+- **Show and Tell**: Share your contributions and get feedback
+- **Community Building**: Connect with other contributors
+
+### Recognition
+
+#### Contributor Levels
+- **First-time Contributor**: Merged first PR
+- **Regular Contributor**: 5+ merged PRs
+- **Core Contributor**: 25+ merged PRs + ongoing involvement
+- **Maintainer**: Trusted with review and merge privileges
+
+#### Recognition Programs
+- **Monthly Highlights**: Top contributors featured in newsletter
+- **Conference Opportunities**: Speaking opportunities at relationship tech events
+- **Early Access**: Beta access to new Ki features and tools
+
+## Getting Help
+
+### Technical Support
+
+<CardGroup cols={2}>
+<Card title="GitHub Issues" href="https://github.com/sinhadanish/ki-startup-command-center/issues" icon="github">
+  Create issues for bugs, features, or questions
+</Card>
+<Card title="Discord Community" href="#" icon="discord">
+  Join our developer community for real-time help
+</Card>
+<Card title="Documentation" href="/docs/development/setup" icon="book">
+  Comprehensive guides and API documentation
+</Card>
+<Card title="Code Review" href="#" icon="code">
+  Request code review from experienced contributors
+</Card>
+</CardGroup>
+
+### Mentorship Program
+
+New to relationship intelligence AI or open source? We offer mentorship:
+
+- **Pair Programming**: Work directly with experienced contributors
+- **Architecture Guidance**: Learn Ki's unique privacy-first patterns
+- **Career Development**: Connect with relationship tech professionals
+- **Project Matching**: Find contributions that match your interests and skills
+
+## Impact & Mission
+
+Your contributions to Ki help:
+
+- **Strengthen Relationships**: Enable millions of couples to transform conflict into connection
+- **Democratize Support**: Make relationship intelligence accessible regardless of income
+- **Advance AI Ethics**: Pioneer empathetic, privacy-first AI in intimate relationships
+- **Build Community**: Create a global network of developers improving human connections
+
+<Check>
+Ready to start contributing? Join us in building the future of relationship intelligence.
+</Check>
+
+## Next Steps
+
+1. **Get Set Up**: Complete the [development setup](/docs/development/setup)
+2. **Understand the Architecture**: Review [Ki's technical design](/docs/development/architecture)
+3. **Find Your First Issue**: Browse [good first issues](https://github.com/sinhadanish/ki-startup-command-center/labels/good-first-issue)
+4. **Join the Community**: Connect with other contributors on Discord
+
+*Thank you for helping us strengthen human connections through technology.*

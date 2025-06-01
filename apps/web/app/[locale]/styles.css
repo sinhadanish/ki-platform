@@ -1,6 +1,6 @@
 @import "@repo/design-system/styles/globals.css";
 
-/* Ki Design System - Emotional Color Palette */
+/* Ki Design System - Enhanced Emotional Color Palette */
 :root {
   /* Primary Ki Colors */
   --ki-primary-500: #5B6EE8;
@@ -18,11 +18,36 @@
   --ki-emotional-trust: #34D399;
   --ki-emotional-peace: #A7F3D0;
   
-  /* Gradients */
+  /* Light Theme Gradients */
   --ki-gradient-primary: linear-gradient(135deg, var(--ki-primary-500) 0%, var(--ki-purple-500) 100%);
   --ki-gradient-connection: linear-gradient(135deg, var(--ki-purple-500) 0%, var(--ki-pink-400) 100%);
   --ki-gradient-growth: linear-gradient(135deg, var(--ki-green-400) 0%, var(--ki-blue-500) 100%);
   --ki-gradient-warmth: linear-gradient(135deg, var(--ki-pink-500) 0%, var(--ki-emotional-comfort) 100%);
+}
+
+/* Dark Theme Enhanced Ki Colors for Marketing Site */
+.dark {
+  /* Adjusted Ki Colors for Dark Theme */
+  --ki-primary-500: oklch(0.65 0.2 280);
+  --ki-purple-500: oklch(0.70 0.15 320);
+  --ki-pink-400: oklch(0.72 0.12 350);
+  --ki-pink-500: oklch(0.68 0.15 340);
+  --ki-blue-500: oklch(0.68 0.12 200);
+  --ki-green-400: oklch(0.72 0.15 150);
+  
+  /* Dark Theme Emotional States */
+  --ki-emotional-calm: oklch(0.70 0.10 200);
+  --ki-emotional-comfort: oklch(0.75 0.12 60);
+  --ki-emotional-joy: oklch(0.78 0.15 80);
+  --ki-emotional-love: oklch(0.72 0.12 350);
+  --ki-emotional-trust: oklch(0.72 0.12 160);
+  --ki-emotional-peace: oklch(0.74 0.08 140);
+  
+  /* Dark Theme Gradients with Warmer Tones */
+  --ki-gradient-primary: linear-gradient(135deg, oklch(0.65 0.2 280) 0%, oklch(0.70 0.15 320) 100%);
+  --ki-gradient-connection: linear-gradient(135deg, oklch(0.70 0.15 320) 0%, oklch(0.72 0.12 350) 100%);
+  --ki-gradient-growth: linear-gradient(135deg, oklch(0.72 0.15 150) 0%, oklch(0.68 0.12 200) 100%);
+  --ki-gradient-warmth: linear-gradient(135deg, oklch(0.68 0.15 340) 0%, oklch(0.75 0.12 60) 100%);
 }
 
 /* Ki Animation System */

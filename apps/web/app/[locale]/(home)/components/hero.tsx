@@ -6,7 +6,7 @@ import type { Dictionary } from '@repo/internationalization';
 import { Heart, MessageCircle, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { KiAvatar } from './ki-avatar';
+import { Ki, SpeechBubble } from '@repo/design-system';
 
 type HeroProps = {
   dictionary: Dictionary;
@@ -126,11 +126,35 @@ export const Hero = ({ dictionary }: HeroProps) => {
 
           {/* Ki Avatar Section */}
           <div className="flex justify-center lg:col-span-5">
-            <div className={`transform transition-all duration-1000 delay-1000 ${isAnimating ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'}`}>
-              <KiAvatar size="large" showSpeechBubble={true} />
+            <div className={`relative transform transition-all duration-1000 delay-1000 ${isAnimating ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'}`}>
+              <div className="relative flex flex-col items-center">
+                {/* Speech Bubble positioned above Ki */}
+                <div className="relative z-20 mb-4">
+                  <SpeechBubble
+                    message="Ready to strengthen your relationship? 💕"
+                    visible={true}
+                    position="top"
+                    size="medium"
+                    animationType="fade-in-words"
+                    autoHide={false}
+                  />
+                </div>
+                
+                {/* Ki Avatar */}
+                <Ki 
+                  state="idle"
+                  theme="default"
+                  size="large"
+                  enhancedGlow={true}
+                  autoCycle={true}
+                  audioIntensity={0.6}
+                  className="drop-shadow-2xl"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-);
+  );
+};

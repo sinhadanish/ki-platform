@@ -1,2 +1,241 @@
 @import "tailwindcss";
 @import "@repo/design-system/styles/globals.css";
+
+/* Ki Design System - Enhanced Emotional Color Palette */
+:root {
+  /* Primary Ki Colors */
+  --ki-primary-500: #5B6EE8;
+  --ki-purple-500: #A855F7;
+  --ki-pink-400: #F472B6;
+  --ki-pink-500: #EC4899;
+  --ki-blue-500: #3B82F6;
+  --ki-green-400: #34D399;
+  
+  /* Emotional States */
+  --ki-emotional-calm: #7DD3FC;
+  --ki-emotional-comfort: #FDBA74;
+  --ki-emotional-joy: #FDE047;
+  --ki-emotional-love: #F472B6;
+  --ki-emotional-trust: #34D399;
+  --ki-emotional-peace: #A7F3D0;
+  
+  /* Light Theme Gradients */
+  --ki-gradient-primary: linear-gradient(135deg, var(--ki-primary-500) 0%, var(--ki-purple-500) 100%);
+  --ki-gradient-connection: linear-gradient(135deg, var(--ki-purple-500) 0%, var(--ki-pink-400) 100%);
+  --ki-gradient-growth: linear-gradient(135deg, var(--ki-green-400) 0%, var(--ki-blue-500) 100%);
+  --ki-gradient-warmth: linear-gradient(135deg, var(--ki-pink-500) 0%, var(--ki-emotional-comfort) 100%);
+}
+
+/* Dark Theme Enhanced Ki Colors */
+.dark {
+  /* Adjusted Ki Colors for Dark Theme */
+  --ki-primary-500: oklch(0.65 0.2 280);
+  --ki-purple-500: oklch(0.70 0.15 320);
+  --ki-pink-400: oklch(0.72 0.12 350);
+  --ki-pink-500: oklch(0.68 0.15 340);
+  --ki-blue-500: oklch(0.68 0.12 200);
+  --ki-green-400: oklch(0.72 0.15 150);
+  
+  /* Dark Theme Emotional States */
+  --ki-emotional-calm: oklch(0.70 0.10 200);
+  --ki-emotional-comfort: oklch(0.75 0.12 60);
+  --ki-emotional-joy: oklch(0.78 0.15 80);
+  --ki-emotional-love: oklch(0.72 0.12 350);
+  --ki-emotional-trust: oklch(0.72 0.12 160);
+  --ki-emotional-peace: oklch(0.74 0.08 140);
+  
+  /* Dark Theme Gradients with Warmer Tones */
+  --ki-gradient-primary: linear-gradient(135deg, oklch(0.65 0.2 280) 0%, oklch(0.70 0.15 320) 100%);
+  --ki-gradient-connection: linear-gradient(135deg, oklch(0.70 0.15 320) 0%, oklch(0.72 0.12 350) 100%);
+  --ki-gradient-growth: linear-gradient(135deg, oklch(0.72 0.15 150) 0%, oklch(0.68 0.12 200) 100%);
+  --ki-gradient-warmth: linear-gradient(135deg, oklch(0.68 0.15 340) 0%, oklch(0.75 0.12 60) 100%);
+  
+  /* Enhanced Dark Theme Surfaces */
+  --ki-surface-elevated: oklch(0.16 0.02 280);
+  --ki-surface-overlay: oklch(0.20 0.025 280);
+  --ki-glow-primary: oklch(0.65 0.2 280 / 0.2);
+  --ki-glow-warm: oklch(0.75 0.12 60 / 0.15);
+}
+
+/* Ki Animation System */
+@keyframes ki-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes ki-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ki-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ki-gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ki Utility Classes */
+.ki-pulse {
+  animation: ki-pulse 2s ease-in-out infinite;
+}
+
+.ki-float {
+  animation: ki-float 3s ease-in-out infinite;
+}
+
+.ki-shimmer {
+  animation: ki-shimmer 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.ki-gradient-text {
+  background: var(--ki-gradient-connection);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ki-gradient-shift 3s ease infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* Responsive Design Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .ki-pulse,
+  .ki-float,
+  .ki-shimmer,
+  .ki-gradient-text,
+  .animate-fade-in,
+  .animate-spin-slow {
+    animation: none;
+  }
+}
+
+/* Enhanced Button Styles */
+.ki-button-primary {
+  background: var(--ki-gradient-connection);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.ki-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px var(--ki-glow-primary);
+}
+
+.ki-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.ki-button-primary:hover::before {
+  left: 100%;
+}
+
+/* Dark Theme Enhanced Utilities */
+.dark .ki-surface-elevated {
+  background: var(--ki-surface-elevated);
+  border: 1px solid oklch(0.25 0.03 280);
+}
+
+.dark .ki-surface-overlay {
+  background: var(--ki-surface-overlay);
+  backdrop-filter: blur(12px);
+  border: 1px solid oklch(0.28 0.04 280);
+}
+
+.dark .ki-glow-soft {
+  box-shadow: 0 0 20px var(--ki-glow-warm);
+}
+
+.dark .ki-glow-primary {
+  box-shadow: 0 0 30px var(--ki-glow-primary);
+}
+
+/* Enhanced Dark Theme Scrollbars */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.10 0.015 280);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.25 0.04 280);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.35 0.06 280);
+}
+
+/* Warm Dark Theme Selection */
+.dark ::selection {
+  background: oklch(0.65 0.2 280 / 0.3);
+  color: oklch(0.95 0.01 280);
+}
+
+/* Enhanced Focus States for Dark Theme */
+.dark *:focus-visible {
+  outline: 2px solid var(--ki-primary-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ki-glow-primary);
+}

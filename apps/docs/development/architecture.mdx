@@ -1,0 +1,703 @@
+---
+title: Development Architecture
+description: Ki's development patterns, Next Forge structure, and platform architecture
+---
+
+# Development Architecture
+
+Ki's platform is built using Next Forge, a modern monorepo architecture that provides type-safe, scalable development patterns for the relationship intelligence platform.
+
+## Next Forge Monorepo Structure
+
+### Application Architecture
+
+<Tabs>
+<Tab title="Apps Overview">
+
+#### Core Applications
+```
+submodules/product/ki-platform/
+├── apps/
+│   ├── web/                         # Marketing website (Next.js 15)
+│   ├── app/                         # Ki relationship app (Next.js 15)  
+│   ├── docs/                        # Documentation site (Next.js 15)
+│   ├── api/                         # API backend (Next.js API routes)
+│   ├── email/                       # Email templates (React Email)
+│   ├── storybook/                   # Component development
+│   └── langgraph-backend/           # AI engine (Python + FastAPI)
+```
+
+#### Application Responsibilities
+- **Web App**: Marketing, landing pages, SEO content, user acquisition
+- **Platform App**: Core Ki relationship intelligence interface and features
+- **AI Engine**: LangGraph-based relationship processing and empathy generation
+- **Docs**: Developer and user documentation (this site)
+- **API**: Backend services and external integrations
+- **Email**: Transactional emails and relationship milestone communications
+
+</Tab>
+<Tab title="Shared Packages">
+
+#### Workspace Package Architecture
+```
+├── packages/
+│   ├── ui/                          # Shared React components
+│   ├── database/                    # Prisma schema and utilities
+│   ├── auth/                        # Clerk authentication
+│   ├── email/                       # Email sending utilities
+│   ├── config/                      # Shared configuration
+│   └── typescript-config/           # Shared TypeScript configs
+```
+
+#### Package Usage Pattern
+```typescript
+// Import shared packages using workspace aliases
+import { Button } from '@repo/ui/button'
+import { db } from '@repo/database'
+import { auth } from '@repo/auth'
+import { sendEmail } from '@repo/email'
+```
+
+#### Core Package Capabilities
+- **@repo/ui**: Radix-based design system with emotional state adaptation
+- **@repo/database**: Prisma ORM with relationship-focused schemas
+- **@repo/auth**: Clerk integration with relationship-aware permissions
+- **@repo/email**: React Email templates for relationship milestones
+- **@repo/config**: Environment variables and shared configuration
+
+</Tab>
+<Tab title="Technology Stack">
+
+#### Frontend Technology
+- **Framework**: Next.js 15 with App Router (React 19.1.0)
+- **UI Components**: Radix UI + shadcn/ui design system
+- **Styling**: Tailwind CSS 4.1.7 with emotional state adaptations
+- **Voice Interface**: WebRTC integration with Hume AI
+- **State Management**: Zustand + React Query for optimal performance
+- **Real-time**: WebSocket connections for live conversation
+
+#### Backend Technology  
+- **AI Engine**: Python 3.11+ with LangGraph orchestration
+- **API Services**: FastAPI for AI endpoints + Next.js API routes
+- **Database**: PostgreSQL with Prisma ORM and Neon serverless
+- **Cache Layer**: Redis for real-time conversation state
+- **Authentication**: Clerk with relationship-specific permissions
+- **File Storage**: Encrypted cloud storage for conversation history
+
+#### Development Tools
+- **Monorepo**: Turborepo for build orchestration and caching
+- **Package Manager**: pnpm 10.11.0 for workspace management
+- **Linting**: Ultracite (Biome-based, faster than ESLint)
+- **Testing**: Vitest for fast unit and integration tests
+- **Type Safety**: TypeScript 5.8.3 with strict configuration
+
+</Tab>
+</Tabs>
+
+## Development Patterns
+
+### Environment Variable Management
+
+Ki uses a composable, type-safe environment system:
+
+```typescript
+// packages/auth/keys.ts
+import { createEnv } from '@t3-oss/env-nextjs'
+import { z } from 'zod'
+
+export const keys = createEnv({
+  server: {
+    CLERK_SECRET_KEY: z.string().min(1),
+    DATABASE_URL: z.string().url(),
+  },
+  client: {
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
+  },
+  runtimeEnv: {
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  },
+})
+```
+
+#### Adding New Environment Variables
+1. Add to relevant `.env.local` files
+2. Update corresponding `keys.ts` with Zod validation
+3. Import and extend in app's `env.ts`
+
+### Component Development Patterns
+
+#### Design System Usage
+```typescript
+// Use Ki's relationship-aware design system
+import { Button } from '@repo/ui/button'
+import { Card } from '@repo/ui/card'
+import { EmotionalStateProvider } from '@repo/ui/emotional-context'
+
+export function ConversationInterface() {
+  return (
+    <EmotionalStateProvider>
+      <Card className="conversation-container">
+        <Button variant="empathetic" size="voice-interaction">
+          Start Conversation
+        </Button>
+      </Card>
+    </EmotionalStateProvider>
+  )
+}
+```
+
+#### Emotional UI Adaptation Pattern
+```typescript
+// components/emotional-ui/EmotionalButton.tsx
+import { cva } from 'class-variance-authority'
+import { useEmotionalState } from '@repo/ui/emotional-context'
+
+const buttonVariants = cva('base-button-styles', {
+  variants: {
+    emotional: {
+      calm: 'bg-blue-500 hover:bg-blue-600',
+      stressed: 'bg-coral-500 hover:bg-coral-600', 
+      excited: 'bg-orange-500 hover:bg-orange-600',
+      reflective: 'bg-green-500 hover:bg-green-600'
+    }
+  }
+})
+
+export function EmotionalButton() {
+  const { currentEmotion } = useEmotionalState()
+  
+  return (
+    <button className={buttonVariants({ emotional: currentEmotion })}>
+      {/* Button content adapts to emotional state */}
+    </button>
+  )
+}
+```
+
+## AI Engine Architecture
+
+### LangGraph Integration Patterns
+
+#### Custom Relationship Processing Node
+```python
+# apps/langgraph-backend/src/graphs/custom_relationship_node.py
+from langgraph import StateGraph
+from typing import Dict, Any
+
+def custom_processing_node(state: Dict[str, Any]) -> Dict[str, Any]:
+    """Add custom relationship processing logic"""
+    
+    # Access partner data separately (privacy-first design)
+    partner_a_data = state.get('partner_a_input')
+    partner_b_data = state.get('partner_b_input')
+    
+    # Implement custom relationship intelligence
+    custom_insight = process_relationship_dynamic(partner_a_data, partner_b_data)
+    
+    # Update state with new insights
+    state['custom_insights'] = custom_insight
+    return state
+
+# Add to Ki relationship graph
+def create_extended_ki_graph():
+    graph = StateGraph()
+    
+    # Add existing Ki nodes
+    graph.add_node("intake", intake_node)
+    graph.add_node("safety_check", safety_check_node)
+    
+    # Add custom node
+    graph.add_node("custom_processing", custom_processing_node)
+    
+    # Define processing flow
+    graph.add_edge("safety_check", "custom_processing")
+    graph.add_edge("custom_processing", "empathy_processing")
+    
+    return graph
+```
+
+#### API Integration Pattern
+```python
+# apps/langgraph-backend/src/api/relationship_endpoints.py
+from fastapi import FastAPI, WebSocket
+from langchain_core.runnables import RunnableConfig
+
+app = FastAPI()
+
+@app.websocket("/ws/conversation/{relationship_id}")
+async def enhanced_conversation(websocket: WebSocket, relationship_id: str):
+    """Enhanced conversation processing with custom logic"""
+    await websocket.accept()
+    
+    config = RunnableConfig(
+        configurable={
+            "relationship_id": relationship_id,
+            "custom_features": ["emotional_adaptation", "crisis_detection"]
+        }
+    )
+    
+    while True:
+        # Receive partner input
+        data = await websocket.receive_json()
+        
+        # Process through extended Ki graph
+        result = await extended_ki_graph.ainvoke(data, config)
+        
+        # Send enhanced responses
+        await websocket.send_json(result)
+```
+
+## Database Architecture
+
+### Relationship-Focused Schema Design
+
+```typescript
+// packages/database/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Relationship {
+  id           String   @id @default(cuid())
+  partner_a_id String
+  partner_b_id String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  
+  // Relationship metadata
+  relationship_type String // marriage, dating, etc.
+  status           String // active, paused, etc.
+  
+  // Privacy and consent
+  shared_data_consent Boolean @default(false)
+  
+  // Relationships
+  conversations Conversation[]
+  patterns      RelationshipPattern[]
+  memories      RelationshipMemory[]
+  
+  @@unique([partner_a_id, partner_b_id])
+  @@map("relationships")
+}
+
+model Conversation {
+  id              String   @id @default(cuid())
+  relationship_id String
+  created_at      DateTime @default(now())
+  
+  // Privacy-separated partner data
+  partner_a_input        String?
+  partner_a_private_data Json?
+  partner_b_input        String?
+  partner_b_private_data Json?
+  
+  // Consensual shared insights
+  shared_insights Json?
+  emotional_states Json?
+  crisis_flags    Json?
+  
+  // Relationships
+  relationship Relationship @relation(fields: [relationship_id], references: [id])
+  
+  @@map("conversations")
+}
+```
+
+### Database Operations Pattern
+
+```typescript
+// utils/database/relationship-operations.ts
+import { db } from '@repo/database'
+
+export class RelationshipOperations {
+  static async createConversation(data: {
+    relationshipId: string
+    partnerAInput: string
+    partnerBInput: string
+    partnerAPrivateData: any
+    partnerBPrivateData: any
+    sharedInsights: any
+  }) {
+    return await db.conversation.create({
+      data: {
+        relationship_id: data.relationshipId,
+        partner_a_input: data.partnerAInput,
+        partner_a_private_data: data.partnerAPrivateData,
+        partner_b_input: data.partnerBInput,
+        partner_b_private_data: data.partnerBPrivateData,
+        shared_insights: data.sharedInsights,
+      },
+    })
+  }
+
+  static async getRelationshipContext(relationshipId: string) {
+    return await db.relationship.findUnique({
+      where: { id: relationshipId },
+      include: {
+        conversations: {
+          orderBy: { created_at: 'desc' },
+          take: 10, // Recent conversation context
+        },
+        patterns: true,
+        memories: true,
+      },
+    })
+  }
+}
+```
+
+## Privacy & Security Architecture
+
+### Multi-Layer Privacy Protection
+
+```typescript
+// utils/privacy/relationship-security.ts
+export class RelationshipPrivacy {
+  static separatePartnerData(conversationData: ConversationData) {
+    return {
+      partner_a: {
+        private_context: conversationData.partner_a_private,
+        shared_consent: conversationData.shared_permissions_a
+      },
+      partner_b: {
+        private_context: conversationData.partner_b_private,
+        shared_consent: conversationData.shared_permissions_b
+      },
+      shared: this.getConsentualSharedData(conversationData)
+    }
+  }
+  
+  static validateConsent(partner_a_id: string, partner_b_id: string, data_type: string) {
+    // Verify both partners consent to sharing specific data types
+    return this.checkDualConsent(partner_a_id, partner_b_id, data_type)
+  }
+  
+  static encryptPartnerData(partnerId: string, data: any) {
+    // Individual partner encryption with unique keys
+    const partnerKey = this.getPartnerEncryptionKey(partnerId)
+    return this.encrypt(data, partnerKey)
+  }
+}
+```
+
+### Encryption Implementation
+
+```python
+# apps/langgraph-backend/src/security/encryption.py
+from cryptography.fernet import Fernet
+import os
+
+class RelationshipEncryption:
+    """Multi-layer encryption for relationship data"""
+    
+    def __init__(self, relationship_id: str):
+        self.relationship_key = self._get_relationship_key(relationship_id)
+        self.individual_keys = self._get_individual_keys(relationship_id)
+    
+    def encrypt_partner_data(self, partner_id: str, data: str) -> str:
+        """Encrypt individual partner data"""
+        partner_key = self.individual_keys[partner_id]
+        f = Fernet(partner_key)
+        return f.encrypt(data.encode()).decode()
+    
+    def encrypt_shared_data(self, data: str) -> str:
+        """Encrypt consensual shared data"""
+        f = Fernet(self.relationship_key)
+        return f.encrypt(data.encode()).decode()
+    
+    def decrypt_with_consent(self, partner_a_id: str, partner_b_id: str, encrypted_data: str) -> str:
+        """Decrypt shared data only with both partners' consent"""
+        if not self._verify_dual_consent(partner_a_id, partner_b_id):
+            raise PermissionError("Dual consent required for shared data access")
+        
+        f = Fernet(self.relationship_key)
+        return f.decrypt(encrypted_data.encode()).decode()
+```
+
+## Performance Optimization
+
+### Response Time Architecture
+
+```typescript
+// utils/performance/response-optimization.ts
+export class ResponseOptimization {
+  static async optimizeConversationFlow(conversationData: any) {
+    const complexity = await this.assessComplexity(conversationData)
+    
+    if (complexity.isCrisis) {
+      // Under 100ms emergency response pathway
+      return await this.crisisResponsePipeline(conversationData)
+    } else if (complexity.isComplex) {
+      // Under 2s comprehensive analysis
+      return await this.fullAnalysisPipeline(conversationData)
+    } else {
+      // Under 500ms standard processing
+      return await this.standardPipeline(conversationData)
+    }
+  }
+  
+  static async cacheRelationshipContext(relationshipId: string) {
+    // Cache frequently accessed relationship data
+    const context = await RelationshipOperations.getRelationshipContext(relationshipId)
+    await this.setCacheWithTTL(`relationship:${relationshipId}`, context, 3600) // 1 hour TTL
+  }
+}
+```
+
+### Scalability Patterns
+
+```python
+# apps/langgraph-backend/src/scalability/conversation-router.py
+class ConversationRouter:
+    """Route conversations to appropriate processing tiers"""
+    
+    async def route_conversation(self, relationship_id: str, conversation_data: dict):
+        """Intelligent routing for optimal performance"""
+        
+        # Assess processing requirements
+        complexity = await self.assess_conversation_complexity(conversation_data)
+        load = await self.get_current_system_load()
+        
+        # Route to appropriate tier
+        if complexity.is_crisis and load.crisis_tier_available:
+            return await self.crisis_processing_tier(relationship_id, conversation_data)
+        elif complexity.requires_advanced_ai:
+            return await self.advanced_processing_tier(relationship_id, conversation_data)
+        else:
+            return await self.standard_processing_tier(relationship_id, conversation_data)
+    
+    async def assess_conversation_complexity(self, data: dict) -> ComplexityMetrics:
+        """Determine processing complexity requirements"""
+        return ComplexityMetrics(
+            is_crisis=self.detect_crisis_keywords(data),
+            emotional_intensity=self.calculate_emotional_intensity(data),
+            requires_advanced_ai=self.needs_complex_reasoning(data),
+            partner_count=len(data.get('participants', []))
+        )
+```
+
+## Testing Architecture
+
+### Comprehensive Testing Strategy
+
+<Tabs>
+<Tab title="Unit Testing">
+
+#### Component Testing Pattern
+```typescript
+// test/components/ConversationInterface.test.tsx
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { ConversationInterface } from '@/components/ConversationInterface'
+
+describe('ConversationInterface', () => {
+  it('adapts UI based on emotional state', () => {
+    render(
+      <EmotionalStateProvider initialState="stressed">
+        <ConversationInterface />
+      </EmotionalStateProvider>
+    )
+    
+    expect(screen.getByRole('button')).toHaveClass('bg-coral-500')
+  })
+  
+  it('maintains privacy between partner inputs', () => {
+    const { rerender } = render(
+      <ConversationInterface partnerId="partner_a" />
+    )
+    
+    const partnerAInput = screen.getByTestId('partner-input')
+    
+    rerender(<ConversationInterface partnerId="partner_b" />)
+    
+    const partnerBInput = screen.getByTestId('partner-input')
+    
+    // Verify inputs are separate
+    expect(partnerAInput).not.toBe(partnerBInput)
+  })
+})
+```
+
+</Tab>
+<Tab title="Integration Testing">
+
+#### AI Pipeline Testing
+```python
+# apps/langgraph-backend/tests/test_relationship_graph.py
+import pytest
+from src.graphs.ki_relationship_graph import ki_graph
+
+@pytest.mark.asyncio
+async def test_dual_partner_processing():
+    """Test Ki's Human-AI-Human framework"""
+    input_data = {
+        "partner_a_input": "I feel like we never talk anymore",
+        "partner_b_input": "I thought we talked yesterday"
+    }
+    
+    result = await ki_graph.ainvoke(input_data)
+    
+    # Verify dual processing
+    assert "partner_a_response" in result
+    assert "partner_b_response" in result
+    assert "shared_insights" in result
+    
+    # Verify privacy separation
+    assert result["partner_a_response"] != result["partner_b_response"]
+    
+    # Verify empathy quality
+    assert "I hear" in result["partner_a_response"].lower()
+    assert "understanding" in result["shared_insights"].lower()
+
+@pytest.mark.asyncio
+async def test_crisis_detection():
+    """Test crisis detection and safety protocols"""
+    crisis_input = {
+        "partner_a_input": "I can't handle this anymore",
+        "partner_b_input": "Maybe we should just end everything"
+    }
+    
+    result = await ki_graph.ainvoke(crisis_input)
+    
+    # Verify crisis detection
+    assert result["safety_status"] == "crisis_detected"
+    assert "professional_resources" in result
+    assert result["immediate_response_required"] is True
+```
+
+</Tab>
+<Tab title="E2E Testing">
+
+#### Complete Flow Testing
+```typescript
+// test/e2e/conversation-flow.spec.ts
+import { test, expect } from '@playwright/test'
+
+test('complete relationship conversation flow', async ({ page }) => {
+  // Setup relationship
+  await page.goto('/app/onboarding')
+  await page.fill('[data-testid="partner-a-name"]', 'Sarah')
+  await page.fill('[data-testid="partner-b-name"]', 'Mike')
+  await page.click('[data-testid="start-relationship"]')
+  
+  // Navigate to conversation
+  await page.goto('/app/conversation')
+  
+  // Start conversation as Partner A
+  await page.click('[data-testid="start-conversation"]')
+  
+  // Simulate voice input (mocked)
+  await page.evaluate(() => {
+    window.mockVoiceInput('I need help with communication')
+  })
+  
+  // Wait for AI response
+  await expect(page.locator('[data-testid="ki-response"]')).toBeVisible()
+  
+  // Verify empathetic response
+  const response = await page.textContent('[data-testid="ki-response"]')
+  expect(response).toContain('I hear')
+  
+  // Verify emotional UI adaptation
+  const conversationContainer = page.locator('[data-testid="conversation-container"]')
+  await expect(conversationContainer).toHaveClass(/emotional-state-/)
+  
+  // Test partner B joining
+  await page.evaluate(() => {
+    window.simulatePartnerJoin('partner_b')
+  })
+  
+  // Verify dual-partner processing
+  await expect(page.locator('[data-testid="partner-b-section"]')).toBeVisible()
+  await expect(page.locator('[data-testid="shared-insights"]')).toBeVisible()
+})
+```
+
+</Tab>
+</Tabs>
+
+## Deployment Architecture
+
+### Production Infrastructure
+
+```yaml
+# vercel.json (Next.js apps)
+{
+  "builds": [
+    {
+      "src": "apps/web/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "apps/app/package.json", 
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "OPENAI_API_KEY": "@openai-key",
+    "ANTHROPIC_API_KEY": "@anthropic-key"
+  }
+}
+```
+
+### Monitoring & Observability
+
+```typescript
+// utils/monitoring/platform-monitoring.ts
+import { Sentry } from '@sentry/nextjs'
+import { PostHog } from 'posthog-js'
+
+export class PlatformMonitoring {
+  static setupConversationTracking() {
+    // Track relationship intelligence metrics
+    PostHog.identify(userId, {
+      relationship_id: relationshipId,
+      conversation_count: conversationCount,
+      emotional_states_detected: emotionalStates
+    })
+  }
+  
+  static trackAIPerformance(metrics: {
+    responseTime: number
+    emotionalAccuracy: number
+    empathyScore: number
+  }) {
+    PostHog.capture('ai_performance', metrics)
+    
+    if (metrics.responseTime > 2000) {
+      Sentry.captureMessage('Slow AI response', 'warning')
+    }
+  }
+}
+```
+
+<Warning>
+**Privacy-First Development**: All architectural patterns prioritize relationship data privacy with end-to-end encryption, consent-based sharing, and secure multi-party computation.
+</Warning>
+
+## Next Steps
+
+Ready to dive deeper into Ki's development patterns?
+
+<CardGroup cols={2}>
+<Card title="Contributing Guide" href="/docs/development/contributing" icon="code">
+  Learn how to contribute to Ki's platform
+</Card>
+<Card title="Setup Guide" href="/docs/development/setup" icon="gear">
+  Complete development environment setup
+</Card>
+<Card title="Technical Architecture" href="/docs/ki/technical-architecture" icon="sitemap">
+  Deep dive into Ki's Human-AI-Human framework
+</Card>
+<Card title="User Experience" href="/docs/ki/user-experience" icon="heart">
+  Understand Ki's emotional design principles
+</Card>
+</CardGroup>

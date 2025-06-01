@@ -6,6 +6,7 @@ import { keys as observability } from '@repo/observability/keys';
 import { keys as rateLimit } from '@repo/rate-limit/keys';
 import { keys as security } from '@repo/security/keys';
 import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   extends: [
@@ -17,7 +18,16 @@ export const env = createEnv({
     security(),
     rateLimit(),
   ],
-  server: {},
+  server: {
+    // Mailchimp Integration
+    MAILCHIMP_API_KEY: z.string().min(1),
+    MAILCHIMP_SERVER_PREFIX: z.string().min(1),
+    MAILCHIMP_AUDIENCE_ID: z.string().min(1),
+  },
   client: {},
-  runtimeEnv: {},
+  runtimeEnv: {
+    MAILCHIMP_API_KEY: process.env.MAILCHIMP_API_KEY,
+    MAILCHIMP_SERVER_PREFIX: process.env.MAILCHIMP_SERVER_PREFIX,
+    MAILCHIMP_AUDIENCE_ID: process.env.MAILCHIMP_AUDIENCE_ID,
+  },
 });

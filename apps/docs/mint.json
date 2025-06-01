@@ -1,31 +1,39 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Ki - Relationship Intelligence Platform",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/ki-dark.svg",
+    "light": "/logo/ki-light.svg"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#6B73FF",
+    "light": "#9BB5FF",
+    "dark": "#5A62E6",
     "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
+      "from": "#6B73FF",
+      "to": "#9BB5FF"
     }
   },
   "topbarLinks": [
     {
-      "name": "Support",
-      "url": "mailto:support@mintlify.com"
+      "name": "Platform",
+      "url": "https://app.ki.com"
+    },
+    {
+      "name": "Contact",
+      "url": "mailto:team@ki.com"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Try Ki",
+    "url": "https://app.ki.com/signup"
   },
   "tabs": [
+    {
+      "name": "Investor Portal",
+      "url": "investor"
+    },
     {
       "name": "API Reference",
       "url": "api-reference"
@@ -33,35 +41,52 @@
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/sinhadanish/ki-platform"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
+      "name": "Demo",
+      "icon": "play",
+      "url": "https://demo.ki.com"
     },
     {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "url": "https://ki.com/blog"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "group": "Welcome",
+      "pages": ["introduction", "quickstart"]
     },
     {
-      "group": "Essentials",
+      "group": "Ki Platform",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "ki/overview",
+        "ki/technical-architecture",
+        "ki/user-experience",
+        "ki/business-model"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/setup",
+        "development/architecture",
+        "development/contributing"
+      ]
+    },
+    {
+      "group": "Investor Portal",
+      "pages": [
+        "investor/overview",
+        "investor/ai-vs-therapist-differentiation",
+        "investor/executive-summary",
+        "investor/financial-model",
+        "investor/market-analysis",
+        "investor/team-organization"
       ]
     },
     {
@@ -75,11 +100,22 @@
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
       ]
+    },
+    {
+      "group": "Framework Documentation",
+      "pages": [
+        "essentials/markdown",
+        "essentials/code",
+        "essentials/images",
+        "essentials/settings",
+        "essentials/navigation",
+        "essentials/reusable-snippets"
+      ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintlify"
+    "x": "https://x.com/ki_platform",
+    "github": "https://github.com/sinhadanish/ki-platform",
+    "linkedin": "https://www.linkedin.com/company/ki-platform"
   }
 }
