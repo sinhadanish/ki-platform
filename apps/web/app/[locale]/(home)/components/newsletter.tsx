@@ -95,64 +95,51 @@ export function Newsletter({ dictionary }: NewsletterProps) {
             {dictionary.newsletter.description}
           </p>
 
-          {/* Newsletter Form */}
-          <Card className="border-purple-200 dark:border-purple-800 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1 relative group">
-                    <Input
-                      type="email"
-                      placeholder={dictionary.newsletter.inputPlaceholder}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-14 text-base border-2 border-purple-200 dark:border-purple-800 focus:border-purple-500 dark:focus:border-purple-400 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm transition-all duration-300 focus:shadow-lg focus:shadow-purple-500/20 group-hover:border-purple-300 dark:group-hover:border-purple-700"
-                      disabled={isPending}
-                    />
-                    {/* Enhanced focus ring */}
-                    <div className="absolute inset-0 rounded-xl border-2 border-purple-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                  </div>
-                  <div className="relative group">
-                    <Button
-                      type="submit"
-                      disabled={isPending || !email.trim()}
-                      className="h-14 px-10 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-600 hover:from-purple-700 hover:via-purple-600 hover:to-pink-700 text-white font-bold text-base rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-purple-400/30 relative overflow-hidden group"
-                    >
-                      {/* Enhanced shimmer effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
-                      
-                      {/* Button content */}
-                      <span className="relative z-10 flex items-center gap-3">
-                        {isPending ? (
-                          <>
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                            <span>Subscribing...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Send className="h-5 w-5" />
-                            <span>{dictionary.newsletter.submitButton}</span>
-                          </>
-                        )}
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-                
-                {/* Enhanced trust indicators */}
-                <div className="flex items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400 pt-4">
-                  <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-950/20 rounded-full">
-                    <Heart className="h-4 w-4 text-red-500 animate-pulse" />
-                    <span className="font-medium">No spam, just love</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-950/20 rounded-full">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="font-medium">Unsubscribe anytime</span>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+          {/* Newsletter Form - Updated to match reference design */}
+          <div className="max-w-md mx-auto">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1 relative group">
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={dictionary.newsletter.inputPlaceholder}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300"
+                  required
+                  disabled={isPending}
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
+              </div>
+              
+              <div className="relative group">
+                <Button
+                  type="submit"
+                  disabled={isPending || !email}
+                  className="relative group bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 disabled:opacity-50 overflow-hidden"
+                >
+                  {isPending ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Subscribing...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>{dictionary.newsletter.submitButton}</span>
+                      <Send className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </>
+                  )}
+                  
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
+                </Button>
+              </div>
+            </form>
+          </div>
+
+          {/* Privacy note */}
+          <p className="text-xs text-gray-500 mt-8">
+            {dictionary.newsletter.privacy}
+          </p>
 
           {/* Social proof */}
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">

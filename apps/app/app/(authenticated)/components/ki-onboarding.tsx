@@ -241,7 +241,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
               enhancedGlow={true}
               autoCycle={false}
               audioIntensity={0.6}
-              className="drop-shadow-2xl w-80 h-80 md:w-96 md:h-96"
+              className="drop-shadow-2xl w-96 h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[36rem] xl:h-[36rem]"
             />
           </div>
 
@@ -250,8 +250,8 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
             <div className="w-full max-w-lg space-y-6 animate-slide-up">
                 {/* Text Input */}
                 {currentStepData.inputType === 'text' && (
-                  <div className="space-y-6">
-                    <div className="relative">
+                  <div className="space-y-4">
+                    <div className="relative group">
                       <Input
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
@@ -262,65 +262,60 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                           currentStepData.field === 'location' ? 'City, Country' :
                           'Your answer'
                         }
-                        className="text-center text-lg py-4 px-6 border-2 border-purple-200/50 dark:border-purple-700/50 rounded-3xl focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300 text-center text-lg"
                         autoFocus
                       />
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-3xl -z-10 blur-sm" />
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
                     </div>
+                    
                     <Button
                       onClick={handleInputSubmit}
                       disabled={!inputValue.trim()}
-                      className="group relative w-full bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 hover:from-purple-700 hover:via-purple-600 hover:to-blue-700 text-white py-4 px-8 rounded-3xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                      className="relative group w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 disabled:opacity-50 overflow-hidden"
                     >
-                      {/* Enhanced shimmer effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      <span>Continue</span>
+                      <Send className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                       
-                      <div className="relative flex items-center justify-center gap-2">
-                        <Send className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                        Continue
-                      </div>
+                      {/* Glow effect */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
                     </Button>
                   </div>
                 )}
 
                 {/* Email Input */}
                 {currentStepData.inputType === 'email' && (
-                  <div className="space-y-6">
-                    <div className="relative">
+                  <div className="space-y-4">
+                    <div className="relative group">
                       <Input
                         type="email"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleInputSubmit()}
                         placeholder="Partner's email (optional)"
-                        className="text-center text-lg py-4 px-6 border-2 border-purple-200/50 dark:border-purple-700/50 rounded-3xl focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300 text-center text-lg"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-3xl -z-10 blur-sm" />
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                       <Button
                         onClick={() => {
                           setInputValue('');
                           handleInputSubmit();
                         }}
                         variant="outline"
-                        className="group flex-1 border-2 border-purple-200/70 hover:border-purple-400 rounded-3xl py-4 px-6 font-semibold bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:scale-105"
+                        className="flex-1 border-2 border-gray-200 hover:border-purple-400 rounded-full py-3 px-6 font-medium bg-white transition-all duration-300 hover:shadow-lg"
                       >
-                        <span className="text-gray-600 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                          Skip for now
-                        </span>
+                        Skip for now
                       </Button>
                       <Button
                         onClick={handleInputSubmit}
-                        className="group relative flex-1 bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 hover:from-purple-700 hover:via-purple-600 hover:to-blue-700 text-white rounded-3xl py-4 px-6 font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105"
+                        className="relative group flex-1 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
                       >
-                        {/* Enhanced shimmer effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                        <span>Send invite</span>
+                        <Send className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                         
-                        <div className="relative flex items-center justify-center gap-2">
-                          <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                          Send invite
-                        </div>
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
                       </Button>
                     </div>
                   </div>
@@ -389,25 +384,16 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                     </div>
                     
                     {currentStepData.inputType === 'multiselect' && data.goals.length > 0 && (
-                      <div className="relative group">
-                        <Button
-                          onClick={handleMultiselectContinue}
-                          className="relative w-full bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 hover:from-purple-700 hover:via-purple-600 hover:to-blue-700 text-white py-5 px-8 rounded-3xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden hover:scale-105"
-                        >
-                          {/* Enhanced shimmer effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                          
-                          <div className="relative flex items-center justify-center gap-3">
-                            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                            <span>Continue with {data.goals.length} goal{data.goals.length > 1 ? 's' : ''}</span>
-                            <div className="flex -space-x-1">
-                              {data.goals.slice(0, 3).map((_, i) => (
-                                <div key={i} className="w-2 h-2 rounded-full bg-white/60 animate-pulse" style={{ animationDelay: `${i * 200}ms` }} />
-                              ))}
-                            </div>
-                          </div>
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={handleMultiselectContinue}
+                        className="relative group w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                      >
+                        <span>Continue with {data.goals.length} goal{data.goals.length > 1 ? 's' : ''}</span>
+                        <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                        
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
+                      </Button>
                     )}
                   </div>
                 )}
@@ -417,34 +403,16 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           {/* Complete Step Button */}
           {currentStep === steps.length - 1 && (
             <div className="animate-fade-in-delayed">
-              <div className="relative group">
-                <Button
-                  onClick={() => onComplete(data)}
-                  className="relative bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 hover:from-purple-700 hover:via-purple-600 hover:to-blue-700 text-white px-12 py-6 rounded-3xl font-bold text-xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 overflow-hidden hover:scale-110"
-                >
-                  {/* Animated background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 animate-pulse" />
-                  
-                  {/* Enhanced shimmer effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                  
-                  <div className="relative flex items-center justify-center gap-3">
-                    <div className="relative">
-                      <Heart className="w-6 h-6 transition-all duration-300 group-hover:scale-110" fill="currentColor" />
-                      <div className="absolute inset-0 animate-ping">
-                        <Heart className="w-6 h-6 opacity-30" />
-                      </div>
-                    </div>
-                    <span className="bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent font-extrabold">
-                      Start My Journey
-                    </span>
-                    <Sparkles className="w-5 h-5 opacity-80 group-hover:rotate-12 transition-transform duration-300" />
-                  </div>
-                  
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-600 to-blue-600 blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300 -z-10 scale-110" />
-                </Button>
-              </div>
+              <Button
+                onClick={() => onComplete(data)}
+                className="relative group bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-12 py-4 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden text-lg"
+              >
+                <span>Start My Journey</span>
+                <Heart className="inline-block ml-2 w-5 h-5" fill="currentColor" />
+                
+                {/* Glow effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
+              </Button>
             </div>
           )}
         </div>
