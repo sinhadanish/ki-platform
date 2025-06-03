@@ -1,4 +1,5 @@
 import { env } from '../../../env';
+import { Buffer } from 'buffer';
 
 interface MailchimpMember {
   email_address: string;

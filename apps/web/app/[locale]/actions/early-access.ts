@@ -98,9 +98,10 @@ export async function subscribeToEarlyAccess(formData: EarlyAccessFormData): Pro
       };
     }
 
+    // Ensure we return a serializable object
     return {
       success: false,
-      message: 'Something went wrong. Please try again.',
+      message: error instanceof Error ? error.message : 'Something went wrong. Please try again.',
     };
   }
 }
@@ -168,9 +169,10 @@ export async function subscribeToNewsletter(formData: NewsletterFormData): Promi
       };
     }
 
+    // Ensure we return a serializable object
     return {
       success: false,
-      message: 'Something went wrong. Please try again.',
+      message: error instanceof Error ? error.message : 'Something went wrong. Please try again.',
     };
   }
 }

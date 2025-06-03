@@ -9,8 +9,17 @@ const locales = [languine.locale.source, ...languine.locale.targets];
 const I18nMiddleware = createI18nMiddleware({
   locales,
   defaultLocale: 'en',
-  urlMappingStrategy: 'rewriteDefault',
+  urlMappingStrategy: 'rewrite',
   resolveLocaleFromRequest: (request: NextRequest) => {
+    // First check if locale is in the URL path
+    const pathname = request.nextUrl.pathname;
+    const locale = locales.find(loc => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`);
+    
+    if (locale) {
+      return locale;
+    }
+    
+    // Fall back to browser language detection
     const headers = Object.fromEntries(request.headers.entries());
     const negotiator = new Negotiator({ headers });
     const acceptedLanguages = negotiator.languages();

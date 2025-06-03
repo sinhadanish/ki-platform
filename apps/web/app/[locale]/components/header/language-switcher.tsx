@@ -24,24 +24,24 @@ export const LanguageSwitcher = () => {
   const pathname = usePathname();
   const params = useParams();
 
+  // Get current locale from params or default to 'en'
+  const currentLocale = (params.locale as string) || 'en';
+
   const switchLanguage = (locale: string) => {
-    const defaultLocale = 'en';
-    let newPathname = pathname;
-
-    // Case 1: If current locale is default and missing from the URL
-    if (
-      !pathname.startsWith(`/${params.locale}`) &&
-      params.locale === defaultLocale
-    ) {
-      // Add the default locale to the beginning to normalize
-      newPathname = `/${params.locale}${pathname}`;
+    // Remove current locale from pathname to get the base path
+    let basePath = pathname;
+    
+    // If pathname starts with current locale, remove it
+    if (pathname.startsWith(`/${currentLocale}`)) {
+      basePath = pathname.substring(`/${currentLocale}`.length) || '/';
     }
-
-    // Replace current locale with the selected one
-    newPathname = newPathname.replace(`/${params.locale}`, `/${locale}`);
-    console.log(newPathname);
-
-    router.push(newPathname);
+    
+    // Construct new path with selected locale
+    const newPath = `/${locale}${basePath === '/' ? '' : basePath}`;
+    
+    console.log(`Switching from ${currentLocale} to ${locale}: ${pathname} -> ${newPath}`);
+    
+    router.push(newPath);
   };
 
   return (
@@ -58,8 +58,13 @@ export const LanguageSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {languages.map(({ label, value }) => (
-          <DropdownMenuItem key={value} onClick={() => switchLanguage(value)}>
+          <DropdownMenuItem 
+            key={value} 
+            onClick={() => switchLanguage(value)}
+            className={currentLocale === value ? 'bg-accent font-medium' : ''}
+          >
             {label}
+            {currentLocale === value && <span className="ml-auto">✓</span>}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

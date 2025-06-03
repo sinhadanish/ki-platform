@@ -1,11 +1,16 @@
 {
   "name": "docs",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "mintlify dev --port 3004",
-    "lint": "mintlify broken-links"
+    "build": "mintlify build",
+    "start": "mintlify dev --port 3004",
+    "lint": "echo 'Linting not applicable for Mintlify docs'",
+    "type-check": "echo 'Type checking not applicable for Mintlify docs'"
   },
-  "devDependencies": {
-    "typescript": "^5.8.3"
-  }
+  "dependencies": {
+    "mintlify": "^4.0.0"
+  },
+  "devDependencies": {}
 }

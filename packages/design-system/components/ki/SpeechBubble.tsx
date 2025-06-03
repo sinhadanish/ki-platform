@@ -95,7 +95,7 @@ export function SpeechBubble({
             {/* Main bubble */}
             <div
               className={cn(
-                "bg-white rounded-2xl shadow-lg border border-purple-100 relative pointer-events-auto",
+                "bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-800 relative pointer-events-auto",
                 config.padding
               )}
               style={{
@@ -107,14 +107,14 @@ export function SpeechBubble({
               }}
             >
               {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-white rounded-2xl opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-800 rounded-2xl opacity-50" />
 
               {/* Content container */}
               <div
                 ref={contentRef}
                 className="relative z-10 overflow-auto max-h-[280px] scrollbar-hide"
               >
-                <div className={cn("font-medium text-gray-800", config.fontSize)}>
+                <div className={cn("font-medium text-gray-800 dark:text-gray-200", config.fontSize)}>
                   <div className="flex flex-wrap">
                     {words.map((word, index) => (
                       <motion.span
@@ -137,7 +137,7 @@ export function SpeechBubble({
 
               {/* Subtle shine effect */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none rounded-2xl"
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-gray-300/10 to-transparent pointer-events-none rounded-2xl"
                 initial={{ x: "-100%" }}
                 animate={{ x: "200%" }}
                 transition={{
@@ -154,10 +154,18 @@ export function SpeechBubble({
               style={{
                 borderLeft: "10px solid transparent",
                 borderRight: "10px solid transparent",
-                borderTop: "10px solid white",
+                borderTop: "10px solid var(--speech-bubble-bg, white)",
                 filter: "drop-shadow(0 2px 4px rgba(168, 85, 247, 0.1))",
               }}
             />
+            <style jsx>{`
+              :global(.dark) {
+                --speech-bubble-bg: rgb(31, 41, 55);
+              }
+              :global(:root) {
+                --speech-bubble-bg: white;
+              }
+            `}</style>
           </div>
         </motion.div>
       )}

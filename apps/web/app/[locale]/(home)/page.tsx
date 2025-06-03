@@ -95,9 +95,9 @@ const Home = async ({ params }: HomeProps) => {
       <HeroSectionEnhanced dictionary={dictionary} />
       
       {/* Below-the-fold sections - Direct loading for testing */}
-      <Features dictionary={dictionary} />
-      <Journey dictionary={dictionary} />
-      <EnhancedNewsletter dictionary={dictionary} />
+      <Features dictionary={dictionary.web.home} />
+      <Journey dictionary={dictionary.web.home} />
+      <EnhancedNewsletter dictionary={dictionary.web.home} />
     </>
   );
 };

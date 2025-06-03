@@ -31,6 +31,10 @@
   },
   "tabs": [
     {
+      "name": "Technical Docs",
+      "url": "development"
+    },
+    {
       "name": "Investor Portal",
       "url": "investor"
     },
@@ -65,23 +69,25 @@
       "group": "Ki Platform",
       "pages": [
         "ki/overview",
-        "ki/technical-architecture",
+        "ki/technical-architecture", 
         "ki/user-experience",
         "ki/business-model"
       ]
     },
     {
-      "group": "Development",
+      "group": "🔒 Technical Documentation (Password: TECH2025)",
       "pages": [
         "development/setup",
         "development/architecture",
+        "development/therapeutic-ai-implementation",
         "development/contributing"
       ]
     },
     {
-      "group": "Investor Portal",
+      "group": "🔒 Investor Portal (Password: INVEST2025)",
       "pages": [
         "investor/overview",
+        "investor/slide-presentation",
         "investor/ai-vs-therapist-differentiation",
         "investor/executive-summary",
         "investor/financial-model",

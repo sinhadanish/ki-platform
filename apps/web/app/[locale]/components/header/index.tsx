@@ -54,6 +54,11 @@ export const Header = ({ dictionary }: HeaderProps) => {
       href: '/about',
       description: '',
     },
+    {
+      title: 'Careers',
+      href: '/careers',
+      description: '',
+    },
   ];
 
   if (env.NEXT_PUBLIC_DOCS_URL) {

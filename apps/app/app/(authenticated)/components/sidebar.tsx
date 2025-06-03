@@ -1,6 +1,6 @@
 'use client';
 
-import { OrganizationSwitcher, UserButton } from '@repo/auth/client';
+import { UserButton } from '@repo/auth/client';
 import { ModeToggle } from '@repo/design-system/components/mode-toggle';
 import { Button } from '@repo/design-system/components/ui/button';
 import {
@@ -61,129 +61,124 @@ type GlobalSidebarProperties = {
 };
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
-      title: 'Playground',
-      url: '#',
+      title: 'Conversations',
+      url: '/',
       icon: SquareTerminalIcon,
       isActive: true,
       items: [
         {
-          title: 'History',
-          url: '#',
+          title: 'Recent Chats',
+          url: '/',
         },
         {
-          title: 'Starred',
-          url: '#',
+          title: 'Saved Insights',
+          url: '/insights',
         },
         {
-          title: 'Settings',
-          url: '#',
+          title: 'Progress Tracking',
+          url: '/progress',
         },
       ],
     },
     {
-      title: 'Models',
-      url: '#',
+      title: 'Relationship Tools',
+      url: '/tools',
       icon: BotIcon,
       items: [
         {
-          title: 'Genesis',
-          url: '#',
+          title: 'Conflict Resolution',
+          url: '/tools/conflict',
         },
         {
-          title: 'Explorer',
-          url: '#',
+          title: 'Communication Coach',
+          url: '/tools/communication',
         },
         {
-          title: 'Quantum',
-          url: '#',
+          title: 'Empathy Builder',
+          url: '/tools/empathy',
         },
       ],
     },
     {
-      title: 'Documentation',
-      url: '#',
+      title: 'Insights',
+      url: '/insights',
       icon: BookOpenIcon,
       items: [
         {
-          title: 'Introduction',
-          url: '#',
+          title: 'Pattern Recognition',
+          url: '/insights/patterns',
         },
         {
-          title: 'Get Started',
-          url: '#',
+          title: 'Growth Opportunities',
+          url: '/insights/growth',
         },
         {
-          title: 'Tutorials',
-          url: '#',
+          title: 'Communication Style',
+          url: '/insights/style',
         },
         {
-          title: 'Changelog',
-          url: '#',
+          title: 'Emotional Trends',
+          url: '/insights/emotions',
         },
       ],
     },
     {
       title: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: Settings2Icon,
       items: [
         {
-          title: 'General',
-          url: '#',
+          title: 'Profile',
+          url: '/settings/profile',
         },
         {
-          title: 'Team',
-          url: '#',
+          title: 'Relationship',
+          url: '/settings/relationship',
         },
         {
-          title: 'Billing',
-          url: '#',
+          title: 'Privacy',
+          url: '/settings/privacy',
         },
         {
-          title: 'Limits',
-          url: '#',
+          title: 'Notifications',
+          url: '/settings/notifications',
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: 'Webhooks',
-      url: '/webhooks',
+      title: 'Resources',
+      url: '/resources',
       icon: AnchorIcon,
     },
     {
       title: 'Support',
-      url: '#',
+      url: '/support',
       icon: LifeBuoyIcon,
     },
     {
       title: 'Feedback',
-      url: '#',
+      url: '/feedback',
       icon: SendIcon,
     },
   ],
   projects: [
     {
-      name: 'Design Engineering',
-      url: '#',
+      name: 'Relationship Goals',
+      url: '/goals',
       icon: FrameIcon,
     },
     {
-      name: 'Sales & Marketing',
-      url: '#',
+      name: 'Weekly Check-ins',
+      url: '/checkins',
       icon: PieChartIcon,
     },
     {
-      name: 'Travel',
-      url: '#',
+      name: 'Growth Journey',
+      url: '/journey',
       icon: MapIcon,
     },
   ],
@@ -200,14 +195,23 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
             <SidebarMenuItem>
               <div
                 className={cn(
-                  'h-[36px] overflow-hidden transition-all [&>div]:w-full',
-                  sidebar.open ? '' : '-mx-1'
+                  'flex items-center gap-3 h-[36px] px-1 transition-all',
+                  sidebar.open ? '' : 'justify-center'
                 )}
               >
-                <OrganizationSwitcher
-                  hidePersonal
-                  afterSelectOrganizationUrl="/"
-                />
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">Ki</span>
+                </div>
+                {sidebar.open && (
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      Ki Platform
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Relationship Intelligence
+                    </span>
+                  </div>
+                )}
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -259,7 +263,7 @@ export const GlobalSidebar = ({ children }: GlobalSidebarProperties) => {
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarGroupLabel>My Journey</SidebarGroupLabel>
             <SidebarMenu>
               {data.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>

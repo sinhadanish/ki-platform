@@ -44,7 +44,7 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
   };
 
   return (
-    <section className="relative overflow-hidden py-24 bg-gradient-to-b from-white to-gray-50">
+    <section className="relative overflow-hidden py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
       {/* Animated background elements */}
       <motion.div
         className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-r from-purple-500/10 to-pink-400/10 rounded-full blur-3xl"
@@ -102,7 +102,7 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
 
         {/* Description */}
         <motion.p 
-          className="text-lg sm:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed"
+          className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -127,7 +127,7 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300"
+                  className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-full focus:border-purple-500 dark:focus:border-purple-400 focus:outline-none transition-colors bg-white dark:bg-gray-800 shadow-lg group-hover:shadow-xl transition-shadow duration-300"
                   required
                 />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
@@ -166,7 +166,7 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
             </form>
           ) : (
             <motion.div
-              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-200"
+              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-full border border-green-200 dark:border-green-800"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, type: "spring", stiffness: 500 }}
@@ -174,7 +174,7 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                 <Check className="w-4 h-4 text-white" />
               </div>
-              <span className="text-green-700 font-medium">Thank you for subscribing!</span>
+              <span className="text-green-700 dark:text-green-300 font-medium">Thank you for subscribing!</span>
             </motion.div>
           )}
         </motion.div>
@@ -219,20 +219,20 @@ export const EnhancedNewsletter = ({ dictionary }: EnhancedNewsletterProps) => {
                 className={`w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-r ${feature.gradient} p-0.5 group-hover:scale-110 transition-transform duration-300`}
                 whileHover={{ rotate: 5 }}
               >
-                <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
-                  <feature.icon className="w-8 h-8 text-gray-700" strokeWidth={1.5} />
+                <div className="w-full h-full bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                  <feature.icon className="w-8 h-8 text-gray-700 dark:text-gray-300" strokeWidth={1.5} />
                 </div>
               </motion.div>
               
-              <h3 className="text-lg font-semibold mb-2 text-gray-800">{feature.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">{feature.title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Privacy note */}
         <motion.p 
-          className="text-xs text-gray-500 mt-8"
+          className="text-xs text-gray-500 dark:text-gray-400 mt-8"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.2 }}

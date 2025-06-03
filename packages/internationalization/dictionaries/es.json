@@ -23,166 +23,152 @@
         "description": "En el mundo acelerado de hoy, tu negocio merece algo mejor que sistemas de comercio obsoletos. Nuestra plataforma innovadora simplifica las operaciones, reduce la complejidad y ayuda a las pequeñas empresas a prosperar en la economía moderna."
       },
       "hero": {
-        "announcement": "Lee nuestro último artículo"
-      },
-      "cases": {
-        "title": "Empoderando historias de éxito en todo el mundo"
+        "announcement": "La primera inteligencia relacional Humano-IA-Humano del mundo",
+        "title": "Siéntete Escuchado y Sana Juntos con Ki",
+        "subtitle": "Tu compañero de IA emocionalmente inteligente para navegar conflictos y profundizar la conexión en tu relación.",
+        "valueProposition": "Transforma los conflictos en conexiones más profundas.",
+        "ctaPrimary": "Prueba Ki Gratis",
+        "ctaSecondary": "Iniciar Sesión",
+        "trustIndicator": "Gratis para probar",
+        "trustSubtext": "No se requiere tarjeta de crédito",
+        "stats": {
+          "conversations": "conversaciones",
+          "successRate": "tasa de éxito",
+          "breakthroughTime": "min promedio de avance"
+        }
       },
       "features": {
-        "title": "Herramientas poderosas para el negocio moderno",
-        "description": "Descubre cómo nuestras características de vanguardia pueden revolucionar tus operaciones diarias.",
+        "badge": "Apoyo Integral",
+        "title": "¿Por Qué Elegir Ki?",
+        "description": "Experimenta el futuro del apoyo emocional con IA de vanguardia que realmente te entiende",
         "items": [
           {
-            "title": "Operaciones simplificadas",
-            "description": "Nuestra plataforma simplifica las operaciones, reduce la complejidad y ayuda a las pequeñas empresas a prosperar en la economía moderna."
+            "title": "Marco Humano-IA-Humano",
+            "description": "Primera plataforma que procesa ambos compañeros simultáneamente mientras mantiene canales privados y contexto compartido."
           },
           {
-            "title": "Análisis en tiempo real",
-            "description": "Obtén información instantánea sobre el rendimiento de tu negocio con herramientas de análisis e informes completos."
+            "title": "IA de Inteligencia Emocional", 
+            "description": "Procesamiento avanzado de empatía que entiende matices emocionales y responde con cuidado genuino."
           },
           {
-            "title": "Flujos de trabajo automatizados",
-            "description": "Ahorra tiempo y reduce errores con automatización inteligente que maneja tareas repetitivas por ti."
+            "title": "Resolución de Conflictos",
+            "description": "Análisis de estilo Thomas-Kilmann con estrategias personalizadas que fortalecen en lugar de juzgar."
           },
           {
-            "title": "Transacciones seguras",
-            "description": "Descansa tranquilo sabiendo que las operaciones de tu negocio están protegidas por seguridad y cifrado de nivel empresarial."
+            "title": "Conversaciones en Tiempo Real",
+            "description": "Interfaz de voz primero con tiempos de respuesta sub-2 segundos para diálogo natural y fluido."
+          },
+          {
+            "title": "Diseño Privacidad Primero",
+            "description": "Cifrado de extremo a extremo con canales privados separados. Los datos de tu relación siguen siendo tuyos."
+          },
+          {
+            "title": "Reconocimiento de Patrones",
+            "description": "Identifica dinámicas relacionales y oportunidades de crecimiento sin etiquetado clínico."
           }
         ]
       },
-      "stats": {
-        "title": "Resultados reales, impacto real",
-        "description": "Únete a miles de empresas que han transformado sus operaciones con nuestra plataforma. Nuestras soluciones han ayudado a las empresas a reducir los costos administrativos en un 60% y aumentar la eficiencia comercial en un 45% en promedio.",
-        "items": [
+      "journey": {
+        "title": "De la Tensión al Trabajo en Equipo en 4 Pasos Guiados",
+        "description": "Un camino respaldado por la ciencia que te mueve de la confusión a la conexión—típicamente en < 12 min.",
+        "badges": [
+          "🔒 100% Privado",
+          "🧠 Informado por terapeutas", 
+          "💬 3000+ sesiones guiadas"
+        ],
+        "steps": [
           {
-            "title": "Usuarios activos mensuales",
-            "metric": "100000",
-            "delta": "10",
-            "type": "unidad"
+            "step": "Paso 1",
+            "title": "Conecta y Siéntete Comprendido",
+            "description": "Ábrete en un espacio seguro y sin juicios donde cada emoción importa",
+            "details": [
+              "Comienza con lo que tengas en mente - no se necesitan guiones",
+              "Ki escucha con inteligencia emocional avanzada", 
+              "Tus sentimientos son validados y comprendidos en tiempo real",
+              "La privacidad completa asegura que puedas ser completamente auténtico"
+            ]
           },
           {
-            "title": "Usuarios activos diarios",
-            "metric": "10000",
-            "delta": "-5",
-            "type": "unidad"
+            "step": "Paso 2",
+            "title": "Descubre Tus Patrones", 
+            "description": "Ki saca a la superficie desencadenantes repetitivos y puntos ciegos, convirtiendo el caos en perspectivas claras y accionables",
+            "details": [
+              "Identifica patrones relacionales recurrentes y desencadenantes",
+              "Comprende las causas raíz detrás de los conflictos",
+              "Obtén claridad sobre puntos ciegos emocionales que no podías ver antes", 
+              "Recibe perspectivas personalizadas basadas en tu historial de conversaciones"
+            ]
           },
           {
-            "title": "Ingresos recurrentes mensuales",
-            "metric": "100000",
-            "delta": "20",
-            "type": "moneda"
+            "step": "Paso 3",
+            "title": "Construye Inteligencia Emocional",
+            "description": "Practica técnicas de comunicación probadas y obtén orientación personalizada para conversaciones difíciles", 
+            "details": [
+              "Practica técnicas de comunicación probadas con Ki",
+              "Aprende estrategias de desescalada para momentos intensos",
+              "Obtén guiones personalizados para conversaciones difíciles",
+              "Domina la regulación emocional a través de ejercicios guiados"
+            ]
           },
           {
-            "title": "Costo por adquisición",
-            "metric": "100",
-            "delta": "-10",
-            "type": "moneda"
-          }
-        ]
-      },
-      "testimonials": {
-        "title": "Escucha a nuestra comunidad próspera",
-        "items": [
-          {
-            "title": "Mejor decisión",
-            "description": "Nuestro objetivo era simplificar el comercio de las pequeñas y medianas empresas, haciéndolo más fácil y rápido que nunca, y lo logramos juntos.",
-            "author": {
-              "name": "Hayden Bleasel",
-              "image": "https://github.com/haydenbleasel.png"
-            }
-          },
-          {
-            "title": "Cambio radical",
-            "description": "Esta plataforma revolucionó la forma en que manejamos nuestras operaciones diarias. Las ganancias de eficiencia han sido notables.",
-            "author": {
-              "name": "Lee Robinson",
-              "image": "https://github.com/leerob.png"
-            }
-          },
-          {
-            "title": "Superó las expectativas",
-            "description": "La implementación fue fluida y los resultados fueron inmediatos. Nuestro equipo se adaptó rápidamente y la productividad se disparó.",
-            "author": {
-              "name": "shadcn",
-              "image": "https://github.com/shadcn.png"
-            }
-          },
-          {
-            "title": "Soporte excepcional",
-            "description": "No solo la plataforma es poderosa, sino que el equipo de atención al cliente ha sido excepcional en ayudarnos a maximizar su potencial.",
-            "author": {
-              "name": "Pontus Abrahamsson",
-              "image": "https://github.com/pontusab.png"
-            }
-          }
-        ]
-      },
-      "faq": {
-        "title": "Preguntas comunes, respuestas de expertos",
-        "description": "Obtén respuestas rápidas a tus preguntas más urgentes sobre nuestra plataforma. Hemos recopilado todo lo que necesitas saber sobre la transformación de las operaciones de tu negocio y cómo comenzar con soluciones comerciales modernas.",
-        "cta": "¿Tienes preguntas? Contáctanos",
-        "items": [
-          {
-            "question": "¿Qué es la plataforma?",
-            "answer": "La plataforma es una plataforma de comercio que te permite comerciar con confianza."
-          },
-          {
-            "question": "¿Qué tan segura es la plataforma?",
-            "answer": "Nuestra plataforma emplea medidas de seguridad de nivel empresarial, incluyendo cifrado de extremo a extremo y autenticación multifactor, para asegurar que tus actividades comerciales permanezcan completamente seguras."
-          },
-          {
-            "question": "¿Qué características de comercio están disponibles?",
-            "answer": "La plataforma ofrece herramientas de comercio completas que incluyen datos de mercado en tiempo real, gráficos avanzados, estrategias de comercio automatizadas y análisis detallados para apoyar la toma de decisiones informadas."
-          },
-          {
-            "question": "¿Cómo funciona la fijación de precios?",
-            "answer": "Ofrecemos niveles de precios flexibles diseñados para escalar con las necesidades de tu negocio, desde planes iniciales para comerciantes individuales hasta soluciones empresariales para grandes organizaciones."
-          },
-          {
-            "question": "¿Qué tipo de soporte proporcionan?",
-            "answer": "Nuestro equipo de soporte dedicado está disponible 24/7 a través de múltiples canales, incluyendo chat en vivo, correo electrónico y teléfono. También proporcionamos documentación extensa y recursos de capacitación."
-          }
-        ]
-      },
-      "cta": {
-        "title": "Comienza la transformación de tu negocio",
-        "description": "Únete a miles de empresas con visión de futuro que ya han modernizado sus operaciones. Nuestra plataforma ofrece las herramientas, el soporte y la eficiencia que necesitas para tener éxito en el competitivo mercado actual. Comienza en minutos."
-      }
-    },
-    "blog": {
-      "meta": {
-        "title": "Blog",
-        "description": "Pensamientos, ideas y opiniones."
-      }
-    },
-    "contact": {
-      "meta": {
-        "title": "Hablemos sobre tu negocio",
-        "description": "Programa una consulta con nuestro equipo para discutir cómo podemos ayudar a simplificar tus operaciones y fomentar el crecimiento de tu negocio."
-      },
-      "hero": {
-        "benefits": [
-          {
-            "title": "Consulta personalizada",
-            "description": "Obtén soluciones a medida y asesoramiento experto específico para las necesidades de tu negocio."
-          },
-          {
-            "title": "Integración sin problemas",
-            "description": "Nos integramos sin problemas con tus sistemas existentes para asegurar una transición suave y una mínima interrupción."
-          },
-          {
-            "title": "Orientación experta",
-            "description": "Nuestro equipo de expertos te guiará a través del proceso, asegurando que obtengas el máximo provecho de nuestra plataforma."
+            "step": "Paso 4", 
+            "title": "Reconéctate como Compañeros",
+            "description": "Ki facilita conversaciones equilibradas con tu pareja, terminando con compromisos accionables",
+            "details": [
+              "Ki facilita conversaciones equilibradas con tu pareja",
+              "Ambos lados obtienen tiempo igual para ser escuchados y comprendidos", 
+              "Trabajen juntos hacia soluciones concretas y compromisos",
+              "Termina cada sesión con próximos pasos claros y conexión renovada"
+            ]
           }
         ],
-        "form": {
-          "title": "Reservar una reunión",
-          "date": "Fecha",
-          "firstName": "Nombre",
-          "lastName": "Apellido",
-          "resume": "Subir currículum",
-          "cta": "Reservar la reunión"
-        }
+        "detailsLabel": "Lo Que Experimentarás:"
+      },
+      "newsletter": {
+        "badge": "Mantente Conectado",
+        "title": "Únete a Nuestro Viaje", 
+        "description": "Obtén actualizaciones exclusivas sobre el desarrollo de Ki, perspectivas relacionales, y sé el primero en conocer sobre nuevas características que mejoran las conexiones emocionales.",
+        "inputPlaceholder": "Ingresa tu email",
+        "submitButton": "Suscribirse",
+        "successTitle": "¡Gracias por suscribirte!",
+        "features": [
+          {
+            "title": "Perspectivas Exclusivas",
+            "description": "Obtén acceso temprano a consejos relacionales y contenido de inteligencia emocional"
+          },
+          {
+            "title": "Actualizaciones del Producto", 
+            "description": "Sé el primero en conocer sobre nuevas características y mejoras de Ki"
+          },
+          {
+            "title": "Acceso a la Comunidad",
+            "description": "Únete a nuestra comunidad de personas construyendo relaciones más saludables"
+          }
+        ],
+        "privacy": "Respetamos tu privacidad. Cancela la suscripción en cualquier momento. Sin spam, nunca.",
+        "socialProof": "Únete a miles de parejas que ya usan Ki para fortalecer sus relaciones"
+      },
+      "kiMessages": {
+        "idle": [
+          "¿Listo para fortalecer tu relación? 💕",
+          "Crezcamos juntos ✨", 
+          "Tu viaje hacia una conexión más profunda comienza aquí 🌱"
+        ],
+        "listening": [
+          "Estoy aquí para escuchar... 👂",
+          "Cuéntame lo que tienes en el corazón 💙",
+          "Entiendo ambas perspectivas 🤝"
+        ],
+        "thinking": [
+          "Procesando con empatía... 🧠",
+          "Encontrando las palabras correctas... 💭", 
+          "Entendiendo tus sentimientos... ❤️"
+        ],
+        "speaking": [
+          "Esto es lo que noto... 🗣️",
+          "Trabajemos en esto juntos ✨",
+          "Cada relación tiene una belleza única 🌸"
+        ]
       }
     }
   }

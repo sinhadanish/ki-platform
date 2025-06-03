@@ -64,11 +64,10 @@ export function Newsletter({ dictionary }: NewsletterProps) {
                 <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
               </div>
               <h3 className="text-2xl font-semibold text-green-800 dark:text-green-200 mb-2">
-                Welcome to the Ki community! 💜
+                {dictionary.newsletter.successTitle}
               </h3>
               <p className="text-green-700 dark:text-green-300">
-                You're now subscribed to our newsletter. We'll share relationship insights, 
-                platform updates, and early access opportunities.
+                We'll share relationship insights, platform updates, and early access opportunities.
               </p>
             </CardContent>
           </Card>
@@ -89,57 +88,66 @@ export function Newsletter({ dictionary }: NewsletterProps) {
           </div>
           
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Stay Connected with Ki
+            {dictionary.newsletter.title}
           </h2>
           
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-xl mx-auto">
-            Get relationship insights, early access to new features, and updates 
-            on how Ki is helping couples build stronger connections.
+            {dictionary.newsletter.description}
           </p>
 
           {/* Newsletter Form */}
-          <Card className="border-purple-200 dark:border-purple-800 shadow-lg">
-            <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1">
+          <Card className="border-purple-200 dark:border-purple-800 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 relative group">
                     <Input
                       type="email"
-                      placeholder="Enter your email address"
+                      placeholder={dictionary.newsletter.inputPlaceholder}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-12 text-base border-purple-200 dark:border-purple-800 focus:border-purple-500 dark:focus:border-purple-400"
+                      className="h-14 text-base border-2 border-purple-200 dark:border-purple-800 focus:border-purple-500 dark:focus:border-purple-400 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm transition-all duration-300 focus:shadow-lg focus:shadow-purple-500/20 group-hover:border-purple-300 dark:group-hover:border-purple-700"
                       disabled={isPending}
                     />
+                    {/* Enhanced focus ring */}
+                    <div className="absolute inset-0 rounded-xl border-2 border-purple-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   </div>
-                  <Button
-                    type="submit"
-                    disabled={isPending || !email.trim()}
-                    className="h-12 px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold transition-all duration-200 transform hover:scale-105"
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Subscribing...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Subscribe
-                      </>
-                    )}
-                  </Button>
+                  <div className="relative group">
+                    <Button
+                      type="submit"
+                      disabled={isPending || !email.trim()}
+                      className="h-14 px-10 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-600 hover:from-purple-700 hover:via-purple-600 hover:to-pink-700 text-white font-bold text-base rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-purple-400/30 relative overflow-hidden group"
+                    >
+                      {/* Enhanced shimmer effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
+                      
+                      {/* Button content */}
+                      <span className="relative z-10 flex items-center gap-3">
+                        {isPending ? (
+                          <>
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            <span>Subscribing...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-5 w-5" />
+                            <span>{dictionary.newsletter.submitButton}</span>
+                          </>
+                        )}
+                      </span>
+                    </Button>
+                  </div>
                 </div>
                 
-                {/* Trust indicators */}
-                <div className="flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400 pt-2">
-                  <div className="flex items-center gap-1">
-                    <Heart className="h-4 w-4 text-red-500" />
-                    <span>No spam, just love</span>
+                {/* Enhanced trust indicators */}
+                <div className="flex items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400 pt-4">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-950/20 rounded-full">
+                    <Heart className="h-4 w-4 text-red-500 animate-pulse" />
+                    <span className="font-medium">No spam, just love</span>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-950/20 rounded-full">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>Unsubscribe anytime</span>
+                    <span className="font-medium">Unsubscribe anytime</span>
                   </div>
                 </div>
               </form>
@@ -148,7 +156,7 @@ export function Newsletter({ dictionary }: NewsletterProps) {
 
           {/* Social proof */}
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
-            Join thousands of couples already using Ki to strengthen their relationships
+            {dictionary.newsletter.socialProof}
           </p>
         </div>
       </div>

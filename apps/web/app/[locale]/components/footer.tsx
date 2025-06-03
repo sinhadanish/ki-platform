@@ -29,6 +29,10 @@ export const Footer = () => {
           href: '/about',
         },
         {
+          title: 'Careers',
+          href: '/careers',
+        },
+        {
           title: 'Contact',
           href: '/contact',
         },
