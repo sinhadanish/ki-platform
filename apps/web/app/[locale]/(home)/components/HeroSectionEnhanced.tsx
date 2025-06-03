@@ -52,27 +52,19 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
 
   // Dynamic messages based on Ki state - deterministic for SSR
   const getMessageForState = (state: string, index: number = 0) => {
+    // Fallback messages in case dictionary is not loaded yet
+    const fallbackMessages = {
+      idle: ["Ready to strengthen your relationship? 💕"],
+      listening: ["I'm here to listen... 👂"],
+      thinking: ["Processing with empathy... 🧠"],
+      speaking: ["Here's what I notice... 🗣️"]
+    };
+
     const messages = {
-      idle: [
-        "Ready to strengthen your relationship? 💕",
-        "Let's grow together ✨",
-        "Your journey to deeper connection starts here 🌱"
-      ],
-      listening: [
-        "I'm here to listen... 👂",
-        "Tell me what's on your heart 💙", 
-        "I understand both perspectives 🤝"
-      ],
-      thinking: [
-        "Processing with empathy... 🧠",
-        "Finding the right words... 💭",
-        "Understanding your feelings... ❤️"
-      ],
-      speaking: [
-        "Here's what I notice... 🗣️",
-        "Let's work through this together ✨",
-        "Every relationship has unique beauty 🌸"
-      ]
+      idle: dictionary?.web?.home?.kiMessages?.idle || fallbackMessages.idle,
+      listening: dictionary?.web?.home?.kiMessages?.listening || fallbackMessages.listening,
+      thinking: dictionary?.web?.home?.kiMessages?.thinking || fallbackMessages.thinking,
+      speaking: dictionary?.web?.home?.kiMessages?.speaking || fallbackMessages.speaking
     };
     
     const stateMessages = messages[state as keyof typeof messages] || messages.idle;
@@ -82,11 +74,11 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
   const [currentMessage, setCurrentMessage] = useState(getMessageForState('idle', 0));
   const messageIndexRef = useRef(0);
 
-  // Update message when Ki state changes
+  // Update message when Ki state changes or dictionary loads
   useEffect(() => {
     messageIndexRef.current += 1;
     setCurrentMessage(getMessageForState(kiState, messageIndexRef.current));
-  }, [kiState]);
+  }, [kiState, dictionary]);
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-blue-950/30 dark:to-purple-950/30">
@@ -147,7 +139,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
             >
               <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-4 py-2 text-sm font-medium text-purple-700 dark:text-purple-300 border border-purple-200/50 dark:border-purple-700/50">
                 <Sparkles className="h-4 w-4" />
-                World's first Human-AI-Human relationship intelligence
+                {dictionary.web.home.hero.announcement}
               </div>
             </motion.div>
 
@@ -175,7 +167,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                     backgroundClip: "text",
                   }}
                 >
-                  Feel Heard and Heal Together with Ki
+                  {dictionary.web.home.hero.title}
                 </motion.span>
               </h1>
             </motion.div>
@@ -185,7 +177,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
               className={`transform transition-all duration-1000 delay-400 ${isAnimating ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
             >
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-6">
-                Your emotionally intelligent AI companion for navigating conflict and deepening connection in your relationship.
+                {dictionary.web.home.hero.subtitle}
               </p>
             </motion.div>
 
@@ -199,7 +191,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
               <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full border border-purple-500/20">
                 <Sparkles className="w-5 h-5 text-purple-500" />
                 <span className="text-lg font-semibold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                  Transform conflicts into deeper connections.
+                  {dictionary.web.home.hero.valueProposition}
                 </span>
               </div>
             </motion.div>
@@ -224,21 +216,21 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                       repeat: Infinity 
                     }}
                   />
-                  <span className="font-mono">{liveStats.conversations.toLocaleString()}+ conversations</span>
+                  <span className="font-mono">{liveStats.conversations.toLocaleString()}+ {dictionary.web.home.hero.stats?.conversations || 'conversations'}</span>
                 </motion.div>
                 <motion.div 
                   className="flex items-center gap-2"
                   whileHover={{ scale: 1.05 }}
                 >
                   <Heart className="h-4 w-4 fill-red-500 text-red-500" />
-                  <span>{liveStats.successRate}% success rate</span>
+                  <span>{liveStats.successRate}% {dictionary.web.home.hero.stats?.successRate || 'success rate'}</span>
                 </motion.div>
                 <motion.div 
                   className="flex items-center gap-2"
                   whileHover={{ scale: 1.05 }}
                 >
                   <MessageCircle className="h-4 w-4 text-blue-500" />
-                  <span>{liveStats.breakthroughTime} min avg breakthrough</span>
+                  <span>{liveStats.breakthroughTime} {dictionary.web.home.hero.stats?.breakthroughTime || 'min avg breakthrough'}</span>
                 </motion.div>
               </div>
             </motion.div>
@@ -248,44 +240,71 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="space-y-5 pt-4"
+              className="space-y-6 pt-6"
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:justify-start">
-                <Link href={`${env.NEXT_PUBLIC_APP_URL}/demo`}>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-start">
+                {/* Primary CTA - Try Ki */}
+                <Link href={`${env.NEXT_PUBLIC_APP_URL}/demo`} className="group">
                   <motion.button
-                    className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-purple-500/40 transition-all duration-500 overflow-hidden"
-                    whileHover={{ scale: 1.02, y: -1 }}
+                    className="group relative w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 text-white rounded-2xl font-bold text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 overflow-hidden border border-purple-400/30"
+                    whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {/* Shimmer effect */}
+                    {/* Enhanced shimmer effect */}
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                       initial={{ x: '-100%' }}
                       whileHover={{ x: '100%' }}
-                      transition={{ duration: 0.8 }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
                     />
                     
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+                    {/* Enhanced glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-400 blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                     
-                    <span className="relative z-10 flex items-center gap-2 justify-center">
+                    <span className="relative z-10 flex items-center gap-3 justify-center">
                       <MessageCircle className="w-5 h-5" />
-                      Try Ki
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                      <span>{dictionary.web.home.hero.ctaPrimary}</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </span>
                   </motion.button>
                 </Link>
 
-                <Link href="/signin">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="border-2 border-purple-200 hover:border-purple-400 dark:border-purple-700 dark:hover:border-purple-500 w-full px-8 py-4 text-lg font-semibold"
+                {/* Secondary CTA - Sign In */}
+                <Link href="/signin" className="group">
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full sm:w-auto"
                   >
-                    Sign In
-                  </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full px-8 py-4 text-lg font-semibold border-2 border-purple-200 hover:border-purple-400 dark:border-purple-700 dark:hover:border-purple-500 bg-white/60 hover:bg-white/80 dark:bg-gray-800/60 dark:hover:bg-gray-800/80 backdrop-blur-sm rounded-2xl transition-all duration-300 group-hover:shadow-lg"
+                    >
+                      <span className="text-purple-700 dark:text-purple-300 group-hover:text-purple-800 dark:group-hover:text-purple-200 transition-colors">
+                        {dictionary.web.home.hero.ctaSecondary}
+                      </span>
+                    </Button>
+                  </motion.div>
                 </Link>
               </div>
+              
+              {/* Trust indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="text-center sm:text-left"
+              >
+                <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center sm:justify-start gap-2">
+                  <span className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="font-medium">{dictionary.web.home.hero.trustIndicator}</span>
+                  </span>
+                  <span className="text-gray-300 dark:text-gray-600">•</span>
+                  <span>{dictionary.web.home.hero.trustSubtext}</span>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
 
@@ -313,11 +332,11 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                 style={{ width: "140%", height: "140%", left: "-20%", top: "-20%" }}
               />
               
-              {/* Orbiting elements */}
-              <div className="absolute inset-0 flex items-center justify-center">
+              {/* Orbiting elements - centered around Ki */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 {[...Array(6)].map((_, i) => {
                   const baseAngle = i * 60; // Fixed base angles for each circle
-                  const radius = 120; // Increased radius for larger Ki
+                  const radius = 140; // Adjusted radius for better centering around Ki
                   return (
                     <motion.div
                       key={`orbit-${i}`} // Stable key to prevent repositioning on state changes
@@ -327,6 +346,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                         top: "50%",
                         marginLeft: "-6px", // Center the circle
                         marginTop: "-6px", // Center the circle
+                        transformOrigin: "6px 6px", // Ensure rotation around circle center
                       }}
                       animate={{
                         x: [
@@ -344,39 +364,39 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                           Math.sin((baseAngle + 360) * Math.PI / 180) * radius
                         ],
                         rotate: [0, 360],
-                        scale: [0.7, 1.3, 0.7],
-                        opacity: [0.4, 1, 0.4],
+                        scale: [0.8, 1.2, 0.8],
+                        opacity: [0.5, 1, 0.5],
                       }}
                       transition={{
                         x: {
-                          duration: 12,
-                          repeat: Infinity,
-                          ease: "linear",
-                          delay: i * 0.2,
-                        },
-                        y: {
-                          duration: 12,
-                          repeat: Infinity,
-                          ease: "linear", 
-                          delay: i * 0.2,
-                        },
-                        rotate: {
-                          duration: 8,
+                          duration: 15,
                           repeat: Infinity,
                           ease: "linear",
                           delay: i * 0.3,
                         },
+                        y: {
+                          duration: 15,
+                          repeat: Infinity,
+                          ease: "linear", 
+                          delay: i * 0.3,
+                        },
+                        rotate: {
+                          duration: 10,
+                          repeat: Infinity,
+                          ease: "linear",
+                          delay: i * 0.4,
+                        },
                         scale: {
+                          duration: 5,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: i * 0.5,
+                        },
+                        opacity: {
                           duration: 4,
                           repeat: Infinity,
                           ease: "easeInOut",
-                          delay: i * 0.4,
-                        },
-                        opacity: {
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: i * 0.2,
+                          delay: i * 0.3,
                         }
                       }}
                     />
@@ -386,7 +406,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
               
               {/* Container for Ki and speech bubble */}
               <motion.div
-                animate={{ y: [0, -20, 0] }}
+                animate={{ y: [0, -15, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                 className="relative z-10 flex flex-col items-center"
               >
@@ -397,7 +417,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.8, y: -10 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="relative z-20 mb-6"
+                  className="relative z-20 mb-4"
                 >
                   <SpeechBubble
                     message={currentMessage}
@@ -410,7 +430,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                   />
                 </motion.div>
               
-                {/* Ki Avatar */}
+                {/* Ki Avatar - reduced size and spacing */}
                 <Ki
                   state={kiState}
                   size="large"
@@ -418,7 +438,7 @@ export const HeroSectionEnhanced = ({ dictionary }: HeroSectionEnhancedProps) =>
                   enhancedGlow={true}
                   autoCycle={false}
                   audioIntensity={0.6}
-                  className="drop-shadow-2xl w-80 h-80 sm:w-96 sm:h-96 md:w-[30rem] md:h-[30rem] lg:w-[36rem] lg:h-[36rem] xl:w-[42rem] xl:h-[42rem]"
+                  className="drop-shadow-2xl w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] xl:w-[32rem] xl:h-[32rem]"
                 />
               </motion.div>
             </motion.div>
