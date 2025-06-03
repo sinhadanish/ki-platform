@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Ki, SpeechBubble } from '@repo/design-system';
 import { Button } from '@repo/design-system/components/ui/button';
 import { Input } from '@repo/design-system/components/ui/input';
 import { Heart, ArrowRight, MapPin, Calendar, Users, Sparkles, Send } from 'lucide-react';
+import { VoiceTextInput } from '../../components/VoiceTextInput';
 
 type OnboardingData = {
   name: string;
@@ -202,198 +204,450 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-blue-950/30 dark:to-purple-950/30 overflow-hidden">
-      {/* Animated background orbs */}
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950 overflow-hidden relative">
+      {/* Enhanced animated background with multiple layers */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 h-32 w-32 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 blur-xl animate-float-1" />
-        <div className="absolute top-60 right-20 h-24 w-24 rounded-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 blur-xl animate-float-2" />
+        {/* Primary floating orbs */}
+        <motion.div
+          className="absolute top-20 left-20 h-48 w-48 rounded-full bg-gradient-to-br from-purple-400/30 to-pink-400/30 blur-3xl"
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <motion.div
+          className="absolute top-60 right-20 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/25 to-cyan-400/25 blur-3xl"
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 40, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 5
+          }}
+        />
+
+        <motion.div
+          className="absolute bottom-20 left-1/3 h-56 w-56 rounded-full bg-gradient-to-br from-green-400/20 to-blue-400/20 blur-3xl"
+          animate={{
+            x: [0, 30, -20, 0],
+            y: [0, -25, 15, 0],
+            scale: [1, 1.1, 1.25, 1],
+          }}
+          transition={{
+            duration: 35,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 10
+          }}
+        />
+
+        {/* Floating particles */}
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 8 + Math.random() * 4,
+              repeat: Infinity,
+              delay: Math.random() * 5,
+            }}
+          />
+        ))}
+
+        {/* Gradient mesh overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-purple-900/10 pointer-events-none" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-        {/* Ki Avatar and Speech */}
-        <div className="flex flex-col items-center space-y-8 max-w-2xl mx-auto">
-          {/* Speech Bubble */}
-          <div
+        {/* Ki Avatar and Speech - Enhanced with dramatic styling */}
+        <motion.div 
+          className="flex flex-col items-center space-y-8 max-w-3xl mx-auto"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        >
+          {/* Speech Bubble with enhanced styling */}
+          <motion.div
             key={`speech-${currentStep}`}
-            className="relative z-20 animate-fade-in"
+            className="relative z-20"
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <div className="relative">
-              <SpeechBubble
-                message={currentStepData.message}
-                visible={true}
-                position="top"
-                size="large"
-                animationType="fade-in-words"
-                autoHide={false}
-                className="mb-6 shadow-2xl"
-              />
-              {/* Enhanced glow around speech bubble */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-3xl blur-xl -z-10 scale-110" />
+              {/* Glass morphism container for speech bubble */}
+              <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+                <div className="text-white text-xl md:text-2xl font-medium text-center leading-relaxed">
+                  {currentStepData.message}
+                </div>
+                
+                {/* Gradient border effect */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/30 via-blue-500/30 to-green-500/30 p-[2px] -z-10">
+                  <div className="h-full w-full rounded-3xl bg-black/20" />
+                </div>
+              </div>
+              
+              {/* Multiple glow layers */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-blue-400/30 rounded-3xl blur-2xl -z-20 scale-110" />
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-400/20 to-cyan-400/20 rounded-3xl blur-3xl -z-30 scale-125" />
             </div>
-          </div>
+          </motion.div>
 
-          {/* Ki Avatar */}
-          <div className="relative animate-breathe">
+          {/* Ki Avatar with enhanced presence */}
+          <motion.div 
+            className="relative"
+            animate={{ 
+              y: [0, -15, 0],
+              rotateY: [0, 5, 0, -5, 0]
+            }}
+            transition={{ 
+              duration: 8, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+          >
+            {/* Multiple glow rings around Ki */}
+            <motion.div
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/20 via-blue-400/20 to-green-400/20 blur-3xl scale-150"
+              animate={{
+                scale: [1.5, 1.8, 1.5],
+                opacity: [0.3, 0.6, 0.3],
+                rotate: [0, 180, 360],
+              }}
+              transition={{ 
+                duration: 12,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            <motion.div
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-400/15 via-purple-400/15 to-blue-400/15 blur-2xl scale-125"
+              animate={{
+                scale: [1.25, 1.4, 1.25],
+                opacity: [0.4, 0.7, 0.4],
+                rotate: [360, 180, 0],
+              }}
+              transition={{ 
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2
+              }}
+            />
+
+            {/* Ki Avatar */}
             <Ki
               state={isTyping ? 'thinking' : currentStepData.kiState}
               size="large"
               theme="default"
               enhancedGlow={true}
               autoCycle={false}
-              audioIntensity={0.6}
-              className="drop-shadow-2xl w-96 h-96 md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[36rem] xl:h-[36rem]"
+              audioIntensity={0.8}
+              className="relative z-10 drop-shadow-2xl w-[24rem] h-[24rem] md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem]"
             />
-          </div>
+            
+            {/* Orbiting particles around Ki */}
+            {[...Array(8)].map((_, i) => {
+              const angle = (i * 45) * (Math.PI / 180);
+              const radius = 200;
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute w-3 h-3 bg-white/60 rounded-full shadow-lg"
+                  style={{
+                    left: '50%',
+                    top: '50%',
+                    marginLeft: '-6px',
+                    marginTop: '-6px',
+                  }}
+                  animate={{
+                    x: [
+                      Math.cos(angle) * radius,
+                      Math.cos(angle + Math.PI) * radius,
+                      Math.cos(angle + 2 * Math.PI) * radius,
+                    ],
+                    y: [
+                      Math.sin(angle) * radius,
+                      Math.sin(angle + Math.PI) * radius,
+                      Math.sin(angle + 2 * Math.PI) * radius,
+                    ],
+                    scale: [0.5, 1, 0.5],
+                    opacity: [0.3, 1, 0.3],
+                  }}
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: i * 0.5,
+                  }}
+                />
+              );
+            })}
+          </motion.div>
+        </motion.div>
 
-          {/* Input Section */}
+          {/* Enhanced Input Section with Voice/Text Support */}
           {showInput && (
-            <div className="w-full max-w-lg space-y-6 animate-slide-up">
-                {/* Text Input */}
+            <motion.div 
+              className="w-full max-w-2xl space-y-8"
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+            >
+                {/* Voice/Text Input with Enhanced Interface */}
                 {currentStepData.inputType === 'text' && (
-                  <div className="space-y-4">
-                    <div className="relative group">
-                      <Input
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleInputSubmit()}
-                        placeholder={
-                          currentStepData.field === 'name' ? 'Your name' :
-                          currentStepData.field === 'age' ? 'Your age' :
-                          currentStepData.field === 'location' ? 'City, Country' :
-                          'Your answer'
-                        }
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300 text-center text-lg"
-                        autoFocus
-                      />
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-                    </div>
-                    
-                    <Button
-                      onClick={handleInputSubmit}
-                      disabled={!inputValue.trim()}
-                      className="relative group w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 disabled:opacity-50 overflow-hidden"
-                    >
-                      <span>Continue</span>
-                      <Send className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                      
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
-                    </Button>
+                  <div className="space-y-6">
+                    <VoiceTextInput
+                      onSendMessage={(message, mode) => {
+                        setInputValue(message)
+                        handleInputSubmit()
+                      }}
+                      placeholder={
+                        currentStepData.field === 'name' ? 'Tell me your name or type it...' :
+                        currentStepData.field === 'age' ? 'Your age (speak or type)...' :
+                        currentStepData.field === 'location' ? 'Where are you located?' :
+                        'Your answer (speak or type)...'
+                      }
+                      className="max-w-2xl mx-auto"
+                      isMobile={false}
+                    />
                   </div>
                 )}
 
-                {/* Email Input */}
+                {/* Email Input with Voice/Text Support */}
                 {currentStepData.inputType === 'email' && (
-                  <div className="space-y-4">
-                    <div className="relative group">
-                      <Input
-                        type="email"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleInputSubmit()}
-                        placeholder="Partner's email (optional)"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:border-purple-500 focus:outline-none transition-colors bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300 text-center text-lg"
-                      />
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-                    </div>
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={() => {
-                          setInputValue('');
-                          handleInputSubmit();
-                        }}
-                        variant="outline"
-                        className="flex-1 border-2 border-gray-200 hover:border-purple-400 rounded-full py-3 px-6 font-medium bg-white transition-all duration-300 hover:shadow-lg"
+                  <div className="space-y-6">
+                    <VoiceTextInput
+                      onSendMessage={(message, mode) => {
+                        setInputValue(message)
+                        handleInputSubmit()
+                      }}
+                      placeholder="Partner's email (speak or type, optional)"
+                      className="max-w-2xl mx-auto"
+                      isMobile={false}
+                    />
+
+                    <div className="flex gap-4">
+                      <motion.div 
+                        className="flex-1"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        Skip for now
-                      </Button>
-                      <Button
-                        onClick={handleInputSubmit}
-                        className="relative group flex-1 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
-                      >
-                        <span>Send invite</span>
-                        <Send className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                        
-                        {/* Glow effect */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
-                      </Button>
+                        <Button
+                          onClick={() => {
+                            setInputValue('');
+                            handleInputSubmit();
+                          }}
+                          className="relative group w-full bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/20 py-4 px-6 rounded-3xl font-medium transition-all duration-300 text-lg"
+                        >
+                          <span className="relative z-10">Skip for now</span>
+                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-gray-400/20 to-gray-300/20 opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
+                        </Button>
+                      </motion.div>
                     </div>
                   </div>
                 )}
 
-                {/* Select Options */}
+                {/* Enhanced Select Options with Glass Morphism */}
                 {(currentStepData.inputType === 'select' || currentStepData.inputType === 'multiselect') && (
                   <div className="space-y-6">
-                    <div className="grid gap-4">
+                    <div className="grid gap-6">
                       {currentStepData.options?.map((option, index) => {
                         const isSelected = currentStepData.inputType === 'multiselect' 
                           ? data.goals.includes(option.value)
                           : data[currentStepData.field as keyof OnboardingData] === option.value;
                         
                         return (
-                          <div key={option.value} className="relative group">
+                          <motion.div 
+                            key={option.value} 
+                            className="relative group"
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ 
+                              duration: 0.5, 
+                              delay: index * 0.1,
+                              ease: "easeOut"
+                            }}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
                             <Button
                               onClick={() => handleSelectOption(option.value)}
-                              variant={isSelected ? "default" : "outline"}
-                              className={`relative h-auto py-5 px-6 text-left rounded-3xl transition-all duration-300 w-full overflow-hidden ${
+                              className={`relative h-auto py-6 px-8 text-left rounded-3xl transition-all duration-500 w-full overflow-hidden ${
                                 isSelected 
-                                  ? 'bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 text-white shadow-xl border-transparent transform scale-105' 
-                                  : 'border-2 border-purple-200/70 hover:border-purple-400 hover:bg-purple-50/80 dark:border-purple-700/70 dark:hover:border-purple-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl hover:scale-105'
+                                  ? 'bg-gradient-to-r from-purple-500/90 via-blue-500/90 to-green-500/90 text-white shadow-2xl border border-white/30 backdrop-blur-xl transform scale-105' 
+                                  : 'bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/20 shadow-xl hover:shadow-2xl'
                               }`}
-                              style={{
-                                animationDelay: `${index * 100}ms`
-                              }}
                             >
-                              {/* Gradient background overlay for selected items */}
+                              {/* Enhanced gradient background for selected items */}
                               {isSelected && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-blue-400/20 animate-pulse" />
+                                <>
+                                  <motion.div 
+                                    className="absolute inset-0 bg-gradient-to-r from-purple-400/30 via-blue-400/30 to-green-400/30"
+                                    animate={{
+                                      opacity: [0.3, 0.6, 0.3],
+                                    }}
+                                    transition={{
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut"
+                                    }}
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent" />
+                                </>
                               )}
                               
-                              <div className="relative flex items-center gap-4">
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                                  isSelected 
-                                    ? 'bg-white/20 backdrop-blur-sm' 
-                                    : 'bg-purple-100 dark:bg-purple-900/50'
-                                }`}>
-                                  <span className="text-2xl">{option.emoji}</span>
-                                </div>
-                                <div className="flex-1">
-                                  <span className={`font-semibold text-lg transition-colors ${
+                              <div className="relative flex items-center gap-6">
+                                {/* Enhanced emoji container */}
+                                <motion.div 
+                                  className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${
                                     isSelected 
-                                      ? 'text-white' 
-                                      : 'text-gray-800 dark:text-gray-200'
-                                  }`}>
+                                      ? 'bg-white/20 backdrop-blur-sm shadow-lg' 
+                                      : 'bg-white/10 backdrop-blur-sm group-hover:bg-white/20'
+                                  }`}
+                                  animate={isSelected ? {
+                                    rotate: [0, 10, -10, 0],
+                                    scale: [1, 1.1, 1]
+                                  } : {}}
+                                  transition={{
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                  }}
+                                >
+                                  <span className="text-3xl">{option.emoji}</span>
+                                </motion.div>
+
+                                <div className="flex-1">
+                                  <span className="font-bold text-xl transition-colors text-white">
                                     {option.label}
                                   </span>
                                 </div>
+
+                                {/* Enhanced selection indicator */}
                                 {isSelected && currentStepData.inputType === 'multiselect' && (
-                                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
-                                    <Sparkles className="w-4 h-4 text-white animate-pulse" />
-                                  </div>
+                                  <motion.div 
+                                    className="flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm shadow-lg"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ duration: 0.5, type: "spring", stiffness: 500 }}
+                                  >
+                                    <Sparkles className="w-6 h-6 text-white animate-pulse" />
+                                  </motion.div>
                                 )}
                               </div>
                               
-                              {/* Shimmer effect on hover */}
+                              {/* Enhanced shimmer effect */}
                               {!isSelected && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-200/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                                <motion.div 
+                                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                                  whileHover={{
+                                    x: ['0%', '100%']
+                                  }}
+                                  transition={{
+                                    duration: 0.8,
+                                    ease: "easeInOut"
+                                  }}
+                                />
+                              )}
+
+                              {/* Multiple glow layers for selected items */}
+                              {isSelected && (
+                                <>
+                                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-400/30 to-blue-400/30 blur-xl -z-10 scale-110" />
+                                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-400/20 to-purple-400/20 blur-2xl -z-20 scale-125" />
+                                </>
                               )}
                             </Button>
-                          </div>
+                          </motion.div>
                         );
                       })}
                     </div>
                     
                     {currentStepData.inputType === 'multiselect' && data.goals.length > 0 && (
-                      <Button
-                        onClick={handleMultiselectContinue}
-                        className="relative group w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium px-8 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <span>Continue with {data.goals.length} goal{data.goals.length > 1 ? 's' : ''}</span>
-                        <ArrowRight className="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                        
-                        {/* Glow effect */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300 -z-10" />
-                      </Button>
+                        <Button
+                          onClick={handleMultiselectContinue}
+                          className="relative group w-full bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold px-10 py-6 rounded-3xl shadow-2xl hover:shadow-purple-500/40 transition-all duration-500 overflow-hidden text-xl"
+                        >
+                          {/* Enhanced gradient background layers */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-purple-500/60 via-blue-500/60 to-green-500/60"
+                            animate={{
+                              opacity: [0.6, 0.8, 0.6],
+                            }}
+                            transition={{
+                              duration: 3,
+                              repeat: Infinity,
+                              ease: "easeInOut"
+                            }}
+                          />
+                          
+                          {/* Shimmer effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
+                            animate={{
+                              x: ['-100%', '100%']
+                            }}
+                            transition={{
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              repeatDelay: 1
+                            }}
+                          />
+                          
+                          {/* Multiple glow orbs */}
+                          <div className="absolute -top-2 -left-2 h-4 w-4 bg-purple-400 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute -bottom-2 -right-2 h-3 w-3 bg-green-400 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute -top-2 -right-2 h-2 w-2 bg-blue-400 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                          
+                          <span className="relative z-10 flex items-center justify-center gap-3">
+                            Continue with {data.goals.length} goal{data.goals.length > 1 ? 's' : ''}
+                            <motion.div
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                              }}
+                            >
+                              <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" />
+                            </motion.div>
+                          </span>
+                          
+                          {/* Enhanced multi-layer glow effect */}
+                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-400/40 to-blue-400/40 blur-xl -z-10 scale-110 group-hover:scale-115 transition-transform duration-500" />
+                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-400/30 to-purple-400/30 blur-2xl -z-20 scale-125 group-hover:scale-130 transition-transform duration-500" />
+                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-400/20 to-cyan-400/20 blur-3xl -z-30 scale-140 group-hover:scale-150 transition-transform duration-500" />
+                        </Button>
+                      </motion.div>
                     )}
                   </div>
                 )}
