@@ -105,7 +105,7 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
             clearTimeout(silenceTimeoutRef.current)
           }
           
-          // Auto-stop after 2 seconds of silence
+          // Auto-stop after 1.5 seconds of silence for better UX
           silenceTimeoutRef.current = setTimeout(() => {
             if (recognitionRef.current && inputMode === 'listening') {
               recognitionRef.current.stop()
@@ -117,7 +117,7 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
                 setVoiceTranscript('')
               }
             }
-          }, 2000)
+          }, 1500)
         }
 
         recognitionRef.current = recognition
