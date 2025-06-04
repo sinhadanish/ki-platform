@@ -149,24 +149,43 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     }
   }, [currentStep, currentStepData.inputType]);
 
-  const handleInputSubmit = () => {
-    if (!inputValue.trim() && currentStepData.inputType !== 'email') return;
-
-    if (currentStepData.field) {
-      setData(prev => ({
-        ...prev,
-        [currentStepData.field!]: inputValue
-      }));
+  const handleInputSubmit = (message?: string) => {
+    const valueToSubmit = message || inputValue;
+    
+    // Allow empty values only for optional email field
+    if (!valueToSubmit.trim() && currentStepData.inputType !== 'email') {
+      console.log('Empty input detected, returning early');
+      return;
     }
 
+    console.log('Processing input:', valueToSubmit, 'for field:', currentStepData.field);
+
+    // Update data immediately
+    if (currentStepData.field) {
+      setData(prev => {
+        const newData = {
+          ...prev,
+          [currentStepData.field!]: valueToSubmit
+        };
+        console.log('Updated data:', newData);
+        return newData;
+      });
+    }
+
+    // Clear input and hide immediately for better UX
     setInputValue('');
     setShowInput(false);
     
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      onComplete(data);
-    }
+    // Small delay to ensure smooth transition and prevent rapid state updates
+    setTimeout(() => {
+      console.log('Moving to next step. Current:', currentStep, 'Total:', steps.length);
+      if (currentStep < steps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        console.log('Completing onboarding with data:', data);
+        onComplete(data);
+      }
+    }, 300);
   };
 
   const handleSelectOption = (value: string) => {
@@ -489,8 +508,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
               <div className="space-y-6">
                 <ImprovedVoiceTextInput
                   onSendMessage={(message, mode) => {
-                    setInputValue(message)
-                    handleInputSubmit()
+                    handleInputSubmit(message)
                   }}
                   placeholder={
                     currentStepData.field === 'name' ? 'Tell me your name or type it...' :
@@ -509,8 +527,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
               <div className="space-y-6">
                 <ImprovedVoiceTextInput
                   onSendMessage={(message, mode) => {
-                    setInputValue(message)
-                    handleInputSubmit()
+                    handleInputSubmit(message)
                   }}
                   placeholder="Partner's email (speak or type, optional)"
                   className="max-w-2xl mx-auto"
@@ -525,8 +542,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                   >
                     <Button
                       onClick={() => {
-                        setInputValue('');
-                        handleInputSubmit();
+                        handleInputSubmit('');
                       }}
                       className="relative group w-full bg-gray-100 dark:bg-white/10 backdrop-blur-xl border border-gray-200 dark:border-white/20 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/20 py-4 px-6 rounded-3xl font-medium transition-all duration-300 text-lg"
                     >

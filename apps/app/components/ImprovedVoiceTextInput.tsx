@@ -48,7 +48,14 @@ export function ImprovedVoiceTextInput({
   // Auto-focus input when typing mode starts
   useEffect(() => {
     if (inputMode === 'typing' && inputRef.current) {
-      inputRef.current.focus()
+      // Use a small delay to ensure the input is rendered first
+      const timer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus()
+          inputRef.current.select() // Also select any existing text
+        }
+      }, 50)
+      return () => clearTimeout(timer)
     }
   }, [inputMode])
 
@@ -100,18 +107,31 @@ export function ImprovedVoiceTextInput({
       <motion.div
         className={`
           relative bg-white/90 dark:bg-white/10 backdrop-blur-xl border rounded-3xl 
-          shadow-2xl overflow-hidden transition-all duration-300
+          shadow-2xl overflow-hidden transition-all duration-300 cursor-text
           ${inputMode === 'listening' 
             ? 'border-green-400/50 shadow-green-500/20 dark:border-green-400/50' 
             : inputMode === 'typing'
             ? 'border-purple-400/50 shadow-purple-500/20 dark:border-purple-400/50'
-            : 'border-gray-200/50 dark:border-white/20'
+            : 'border-gray-200/50 dark:border-white/20 hover:border-purple-300/50 dark:hover:border-purple-400/30'
           }
         `}
         animate={{
           scale: inputMode !== 'idle' ? 1.02 : 1,
         }}
         transition={{ duration: 0.2 }}
+        onClick={(e) => {
+          // If not in typing mode and user clicks anywhere on container, start typing
+          if (inputMode === 'idle') {
+            e.preventDefault()
+            startTyping()
+            setTimeout(() => {
+              if (inputRef.current) {
+                inputRef.current.focus()
+                inputRef.current.select()
+              }
+            }, 10)
+          }
+        }}
       >
         {/* Listening animation background */}
         <AnimatePresence>
@@ -222,7 +242,21 @@ export function ImprovedVoiceTextInput({
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                   className="px-4 py-4 min-h-[52px] flex items-center cursor-text hover:bg-white/5 rounded-xl transition-all duration-200"
-                  onClick={startTyping}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    startTyping()
+                    // Try to focus immediately and also after a short delay
+                    setTimeout(() => {
+                      if (inputRef.current) {
+                        inputRef.current.focus()
+                        inputRef.current.select()
+                      }
+                    }, 10)
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault() // Prevent default selection behavior
+                  }}
                 >
                   {displayText ? (
                     <div className="text-gray-800 dark:text-white text-lg">
