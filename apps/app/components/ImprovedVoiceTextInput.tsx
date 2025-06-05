@@ -320,7 +320,7 @@ export function ImprovedVoiceTextInput({
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
-                className="p-2 rounded-xl bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/30 transition-all duration-200"
+                className="p-2 rounded-xl bg-gray-100 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-500/30 transition-all duration-200"
               >
                 <X className="w-4 h-4" />
               </motion.button>
