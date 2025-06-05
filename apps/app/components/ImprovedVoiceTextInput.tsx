@@ -48,14 +48,8 @@ export function ImprovedVoiceTextInput({
   // Auto-focus input when typing mode starts
   useEffect(() => {
     if (inputMode === 'typing' && inputRef.current) {
-      // Use a small delay to ensure the input is rendered first
-      const timer = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus()
-          inputRef.current.select() // Also select any existing text
-        }
-      }, 50)
-      return () => clearTimeout(timer)
+      // Immediate focus - no delay needed
+      inputRef.current.focus()
     }
   }, [inputMode])
 
@@ -124,12 +118,6 @@ export function ImprovedVoiceTextInput({
           if (inputMode === 'idle') {
             e.preventDefault()
             startTyping()
-            setTimeout(() => {
-              if (inputRef.current) {
-                inputRef.current.focus()
-                inputRef.current.select()
-              }
-            }, 10)
           }
         }}
       >
@@ -212,85 +200,64 @@ export function ImprovedVoiceTextInput({
             </motion.button>
           )}
 
-          {/* Text input */}
+          {/* Text input - Always rendered for instant focus */}
           <div className="flex-1 relative">
-            <AnimatePresence mode="wait">
-              {inputMode === 'typing' ? (
-                <motion.input
-                  key="text-input"
-                  ref={inputRef}
-                  type="text"
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder={placeholder}
-                  disabled={disabled}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full bg-transparent border-none px-4 py-4 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-white/60 focus:outline-none text-lg font-medium"
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  spellCheck="false"
-                />
-              ) : (
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputMode === 'listening' ? displayText : textInput}
+              onChange={(e) => {
+                if (inputMode !== 'listening') {
+                  setTextInput(e.target.value)
+                }
+              }}
+              onKeyDown={handleKeyPress}
+              onFocus={() => {
+                if (inputMode === 'idle') {
+                  startTyping()
+                }
+              }}
+              placeholder={inputMode === 'listening' ? "Listening..." : placeholder}
+              disabled={disabled}
+              className={`
+                w-full bg-transparent border-none px-4 py-4 text-lg font-medium focus:outline-none transition-all duration-200
+                ${inputMode === 'listening' 
+                  ? 'text-green-600 dark:text-green-400 placeholder-green-500/60 cursor-default' 
+                  : 'text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-white/60 cursor-text'
+                }
+                ${inputMode === 'idle' ? 'cursor-text' : ''}
+              `}
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck="false"
+              readOnly={inputMode === 'listening'}
+            />
+            
+            {/* Overlay for listening mode visual feedback */}
+            {inputMode === 'listening' && interimTranscript && (
+              <div className="absolute inset-0 px-4 py-4 pointer-events-none flex items-center">
+                <span className="text-green-600 dark:text-green-400">{voiceTranscript}</span>
+                <span className="text-blue-600 dark:text-blue-400 opacity-70 italic">{interimTranscript}</span>
+              </div>
+            )}
+            
+            {/* Status icon for idle mode */}
+            {inputMode === 'idle' && !textInput && (
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Type className="w-4 h-4 text-gray-400 dark:text-white/40" />
+              </div>
+            )}
+            
+            {/* Listening indicator */}
+            {inputMode === 'listening' && (
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                 <motion.div
-                  key="display-text"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="px-4 py-4 min-h-[52px] flex items-center cursor-text hover:bg-white/5 rounded-xl transition-all duration-200"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    startTyping()
-                    // Try to focus immediately and also after a short delay
-                    setTimeout(() => {
-                      if (inputRef.current) {
-                        inputRef.current.focus()
-                        inputRef.current.select()
-                      }
-                    }, 10)
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault() // Prevent default selection behavior
-                  }}
-                >
-                  {displayText ? (
-                    <div className="text-gray-800 dark:text-white text-lg">
-                      <span className="opacity-100">{voiceTranscript}</span>
-                      {interimTranscript && (
-                        <span className="opacity-70 italic text-blue-600 dark:text-blue-400">{interimTranscript}</span>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="text-gray-500 dark:text-white/60 text-lg flex items-center">
-                      {inputMode === 'listening' ? (
-                        <motion.div
-                          animate={{ opacity: [0.5, 1, 0.5] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                          className="flex items-center"
-                        >
-                          <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.5, repeat: Infinity }}
-                            className="w-2 h-2 bg-green-400 rounded-full mr-2"
-                          />
-                          Listening...
-                        </motion.div>
-                      ) : (
-                        <div className="flex items-center">
-                          <Type className="w-4 h-4 mr-2" />
-                          {placeholder}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.5, repeat: Infinity }}
+                  className="w-2 h-2 bg-green-400 rounded-full"
+                />
+              </div>
+            )}
           </div>
 
           {/* Action buttons */}
@@ -326,26 +293,19 @@ export function ImprovedVoiceTextInput({
               </motion.button>
             )}
 
-            {/* Send button - Prominent and rewarding */}
+            {/* Send button - Fast and responsive */}
             {!isInputEmpty && (
               <motion.button
                 onClick={inputMode === 'typing' ? sendTextMessage : stopListening}
-                whileHover={{ scale: 1.1, y: -2 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, scale: 0, rotate: -90 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                exit={{ opacity: 0, scale: 0, rotate: 90 }}
-                transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-                className="p-4 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-white shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.15, type: "spring", stiffness: 400 }}
+                className="p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-150"
               >
-                {/* Success animation background */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 to-orange-400/30"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.5, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <Send className="w-6 h-6 relative z-10" />
+                <Send className="w-5 h-5" />
               </motion.button>
             )}
           </div>

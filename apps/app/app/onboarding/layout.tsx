@@ -72,9 +72,9 @@ const OnboardingLayout = ({ children }: OnboardingLayoutProperties) => {
     };
   }, []);
 
-  // Simple layout for onboarding - no sidebar, no complex layout
+  // Immersive full-screen layout for onboarding - no sidebar, no navigation
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full overflow-hidden">
       {children}
     </div>
   );

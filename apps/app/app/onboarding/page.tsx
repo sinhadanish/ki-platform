@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { KiOnboarding } from '../components/ki-onboarding';
+import { KiOnboarding } from './components/ki-onboarding';
 
 type OnboardingData = {
   name: string;
