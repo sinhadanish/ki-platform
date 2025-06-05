@@ -154,22 +154,15 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     
     // Allow empty values only for optional email field
     if (!valueToSubmit.trim() && currentStepData.inputType !== 'email') {
-      console.log('Empty input detected, returning early');
       return;
     }
 
-    console.log('Processing input:', valueToSubmit, 'for field:', currentStepData.field);
-
     // Update data immediately
     if (currentStepData.field) {
-      setData(prev => {
-        const newData = {
-          ...prev,
-          [currentStepData.field!]: valueToSubmit
-        };
-        console.log('Updated data:', newData);
-        return newData;
-      });
+      setData(prev => ({
+        ...prev,
+        [currentStepData.field!]: valueToSubmit
+      }));
     }
 
     // Clear input and hide immediately for better UX
@@ -178,11 +171,9 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     
     // Small delay to ensure smooth transition and prevent rapid state updates
     setTimeout(() => {
-      console.log('Moving to next step. Current:', currentStep, 'Total:', steps.length);
       if (currentStep < steps.length - 1) {
         setCurrentStep(currentStep + 1);
       } else {
-        console.log('Completing onboarding with data:', data);
         onComplete(data);
       }
     }, 300);
