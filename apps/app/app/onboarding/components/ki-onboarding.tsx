@@ -446,43 +446,6 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
               className="relative z-10 drop-shadow-2xl w-[24rem] h-[24rem] md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem]"
             />
             
-            {/* Orbiting particles around Ki */}
-            {[...Array(8)].map((_, i) => {
-              const angle = (i * 45) * (Math.PI / 180);
-              const radius = 200;
-              return (
-                <motion.div
-                  key={i}
-                  className="absolute w-3 h-3 bg-white/60 rounded-full shadow-lg"
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    marginLeft: '-6px',
-                    marginTop: '-6px',
-                  }}
-                  animate={{
-                    x: [
-                      Math.cos(angle) * radius,
-                      Math.cos(angle + Math.PI) * radius,
-                      Math.cos(angle + 2 * Math.PI) * radius,
-                    ],
-                    y: [
-                      Math.sin(angle) * radius,
-                      Math.sin(angle + Math.PI) * radius,
-                      Math.sin(angle + 2 * Math.PI) * radius,
-                    ],
-                    scale: [0.5, 1, 0.5],
-                    opacity: [0.3, 1, 0.3],
-                  }}
-                  transition={{
-                    duration: 15,
-                    repeat: Infinity,
-                    ease: "linear",
-                    delay: i * 0.5,
-                  }}
-                />
-              );
-            })}
           </motion.div>
         </motion.div>
 
