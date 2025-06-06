@@ -4,16 +4,15 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Ki, SpeechBubble } from '@repo/design-system';
 import { Button } from '@repo/design-system/components/ui/button';
-import { Input } from '@repo/design-system/components/ui/input';
 import { Heart, ArrowRight, MapPin, Calendar, Users, Sparkles, Send, Save, Clock } from 'lucide-react';
 import { EnhancedVoiceTextInput } from '../../../components/EnhancedVoiceTextInput';
 import { ThemeToggle } from '../../../components/ThemeToggle';
 import { useOnboardingProgress, OnboardingData } from '../../../hooks/useOnboardingProgress';
 import { ProgressResumeModal } from './progress-resume-modal';
-import { useAdaptiveMessages, MessageContext } from '../../../hooks/useAdaptiveMessages';
-import { usePerformanceOptimization } from '../../../hooks/usePerformanceOptimization';
-import { useOfflineMode } from '../../../hooks/useOfflineMode';
-import { OfflineIndicator } from '../../../components/OfflineIndicator';
+// import { useAdaptiveMessages, MessageContext } from '../../../hooks/useAdaptiveMessages';
+// import { usePerformanceOptimization } from '../../../hooks/usePerformanceOptimization';
+// import { useOfflineMode } from '../../../hooks/useOfflineMode';
+// import { OfflineIndicator } from '../../../components/OfflineIndicator';
 
 
 type KiEmotion = 'curious' | 'excited' | 'empathetic' | 'encouraging' | 'welcoming' | 'thoughtful' | 'celebratory';
@@ -52,41 +51,61 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
   const [isSyncing, setIsSyncing] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [screenHeight, setScreenHeight] = useState(0);
-  const [messageContext, setMessageContext] = useState<MessageContext>({
-    timeOfDay: 'morning',
-    isReturningUser: false,
-    completedSteps: [],
-    userTone: 'friendly',
-    deviceType: 'desktop'
-  });
+  // Temporary simplified state while fixing imports
+  const isOnline = true;
+  const hasOfflineData = false;
+  const optimizedConfig = {
+    reduceMotion: false,
+    particleCount: 8,
+    animationDuration: 1,
+    enableHeavyEffects: true
+  };
+  
+  const saveOfflineData = () => {};
+  const clearOfflineData = () => {};
+  const getOfflineCapabilities = () => ({ canUseVoiceInput: true });
+  
+  // Simplified success message
+  const getSuccessMessage = () => ({ message: 'Progress saved' });
+  const getMotivationalMessage = () => ({ message: 'You\'re doing great!' });
+  
+  const handleSyncOfflineData = async () => {};
+  
+  // const [messageContext, setMessageContext] = useState<MessageContext>({
+  //   timeOfDay: 'morning',
+  //   isReturningUser: false,
+  //   completedSteps: [],
+  //   userTone: 'friendly',
+  //   deviceType: 'desktop'
+  // });
 
-  // Initialize adaptive messaging
-  const adaptiveMessages = useAdaptiveMessages(data, messageContext);
+  // // Initialize adaptive messaging
+  // const adaptiveMessages = useAdaptiveMessages(data, messageContext);
   
-  // Initialize performance optimization
-  const { optimizedConfig, preloadCriticalAssets, measurePerformance } = usePerformanceOptimization();
+  // // Initialize performance optimization
+  // const { optimizedConfig, preloadCriticalAssets, measurePerformance } = usePerformanceOptimization();
   
-  // Initialize offline mode
-  const { 
-    isOnline, 
-    hasOfflineData, 
-    saveOfflineData, 
-    syncOfflineData, 
-    clearOfflineData,
-    getOfflineCapabilities 
-  } = useOfflineMode();
+  // // Initialize offline mode
+  // const { 
+  //   isOnline, 
+  //   hasOfflineData, 
+  //   saveOfflineData, 
+  //   syncOfflineData, 
+  //   clearOfflineData,
+  //   getOfflineCapabilities 
+  // } = useOfflineMode();
   
-  // Preload critical assets on mount
-  useEffect(() => {
-    preloadCriticalAssets();
-  }, [preloadCriticalAssets]);
+  // // Preload critical assets on mount
+  // useEffect(() => {
+  //   preloadCriticalAssets();
+  // }, [preloadCriticalAssets]);
 
   const steps: Step[] = [
     {
       id: 'welcome',
       kiState: 'idle',
       emotion: 'welcoming',
-      message: adaptiveMessages.getWelcomeMessage().message,
+      message: "Ready to strengthen your relationship? 💕",
       inputType: 'none',
       field: null,
       gesture: 'wave'
@@ -95,7 +114,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'name',
       kiState: 'listening',
       emotion: 'curious',
-      message: adaptiveMessages.getStepMessage('name', data).message,
+      message: "I'm Ki. What's your name?",
       inputType: 'text',
       field: 'name',
       canSkip: false
@@ -104,7 +123,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'age',
       kiState: 'thinking',
       emotion: 'excited',
-      message: adaptiveMessages.getStepMessage('age', data).message,
+      message: data.name ? `Nice to meet you, ${data.name}! How old are you?` : "How old are you?",
       inputType: 'text',
       field: 'age',
       canSkip: true,
@@ -114,7 +133,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'location',
       kiState: 'listening',
       emotion: 'curious',
-      message: adaptiveMessages.getStepMessage('location', data).message,
+      message: "Where are you located?",
       inputType: 'text',
       field: 'location',
       canSkip: true
@@ -123,7 +142,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'relationship',
       kiState: 'thinking',
       emotion: 'empathetic',
-      message: adaptiveMessages.getStepMessage('relationship', data).message,
+      message: "Tell me about your relationship status",
       inputType: 'select',
       field: 'relationshipStatus',
       canSkip: false,
@@ -138,7 +157,9 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'length',
       kiState: 'listening',
       emotion: 'thoughtful',
-      message: adaptiveMessages.getStepMessage('length', data).message,
+      message: data.relationshipStatus === 'married' ? "How long have you been married?" : 
+               data.relationshipStatus === 'engaged' ? "How long have you been engaged?" :
+               "How long have you been together?",
       inputType: 'text',
       field: 'relationshipLength',
       canSkip: true
@@ -147,7 +168,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'goals',
       kiState: 'thinking',
       emotion: 'encouraging',
-      message: adaptiveMessages.getStepMessage('goals', data).message,
+      message: "What would you like to work on together?",
       inputType: 'multiselect',
       field: 'goals',
       canSkip: false,
@@ -165,7 +186,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'partner',
       kiState: 'speaking',
       emotion: 'encouraging',
-      message: adaptiveMessages.getStepMessage('partner', data).message,
+      message: "Would you like to invite your partner to join Ki?",
       inputType: 'email',
       field: 'partnerEmail',
       canSkip: true
@@ -174,7 +195,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
       id: 'complete',
       kiState: 'idle',
       emotion: 'celebratory',
-      message: adaptiveMessages.getStepMessage('complete', data).message,
+      message: data.name ? `Welcome to Ki, ${data.name}! I'm here to help you both grow stronger together. Let's begin your journey ✨` : "Welcome to Ki! Let's begin your journey ✨",
       inputType: 'none',
       field: null,
       gesture: 'thumbsUp'
@@ -291,11 +312,11 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     setShowAutoSave(true);
     setTimeout(() => setShowAutoSave(false), 2000);
     
-    // Update message context with completion
-    setMessageContext(prev => ({
-      ...prev,
-      completedSteps: [...prev.completedSteps, currentStepData.id]
-    }));
+    // Update message context with completion - temporarily disabled
+    // setMessageContext(prev => ({
+    //   ...prev,
+    //   completedSteps: [...prev.completedSteps, currentStepData.id]
+    // }));
 
     // Clear input and hide immediately for better UX
     setInputValue('');
@@ -359,16 +380,16 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     setShowResumeModal(false);
   };
   
-  const handleSyncOfflineData = async () => {
-    setIsSyncing(true);
-    try {
-      await syncOfflineData();
-    } catch (error) {
-      console.error('Failed to sync offline data:', error);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
+  // const handleSyncOfflineData = async () => {
+  //   setIsSyncing(true);
+  //   try {
+  //     await syncOfflineData();
+  //   } catch (error) {
+  //     console.error('Failed to sync offline data:', error);
+  //   } finally {
+  //     setIsSyncing(false);
+  //   }
+  // };
 
   return (
     <>
@@ -387,14 +408,14 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           <ThemeToggle />
         </div>
         
-        {/* Offline Indicator */}
-        <OfflineIndicator
+        {/* Offline Indicator - temporarily disabled */}
+        {/*<OfflineIndicator
           isOnline={isOnline}
           hasOfflineData={hasOfflineData}
           isSyncing={isSyncing}
           onSync={handleSyncOfflineData}
           onClearOfflineData={clearOfflineData}
-        />
+        />*/}
         
         {/* Auto-save Indicator with Adaptive Message */}
         {showAutoSave && (
@@ -406,7 +427,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           >
             <Save className="w-4 h-4" />
             <span className="text-sm font-medium">
-              {adaptiveMessages.getSuccessMessage('progress-saved').message}
+              {getSuccessMessage().message}
             </span>
           </motion.div>
         )}
@@ -419,7 +440,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
             className="fixed bottom-20 right-4 z-20 bg-purple-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-2xl shadow-lg max-w-xs"
           >
             <p className="text-sm font-medium">
-              {adaptiveMessages.getMotivationalMessage().message}
+              {getMotivationalMessage().message}
             </p>
           </motion.div>
         )}
@@ -844,7 +865,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                   }
                 }, 300);
               }}
-              variant="ghost"
+              variant="outline"
               className={`text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl font-medium transition-all duration-200 ${
                 isMobile ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm'
               }`}

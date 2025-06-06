@@ -119,14 +119,12 @@ export function OfflineIndicator({
                   <CheckCircle className="w-3 h-3 mr-1" />
                   Sync Now
                 </Button>
-                <Button
+                <button
                   onClick={onClearOfflineData}
-                  size="sm"
-                  variant="ghost"
-                  className="text-xs py-2 text-gray-500 hover:text-gray-700"
+                  className="text-xs py-2 px-3 text-gray-500 hover:text-gray-700 rounded transition-colors"
                 >
                   Clear
-                </Button>
+                </button>
               </motion.div>
             )}
           </div>

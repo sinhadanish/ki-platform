@@ -194,8 +194,7 @@ export function ProgressResumeModal({
             >
               <Button
                 onClick={onStartOver}
-                variant="outline"
-                className="w-full border-2 border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-600 text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-300 font-medium py-4 rounded-2xl transition-all duration-200"
+                className="w-full border-2 border-gray-200 dark:border-gray-600 hover:border-purple-300 dark:hover:border-purple-600 text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-300 font-medium py-4 rounded-2xl transition-all duration-200 bg-transparent"
               >
                 <RotateCcw className="w-5 h-5 mr-2" />
                 Start Over
