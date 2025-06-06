@@ -144,42 +144,6 @@ const ListeningState = ({
       }}
     />
 
-    {/* Sound particles */}
-    {[...Array(8)].map((_, i) => {
-      const angle = (i * Math.PI) / 4;
-      // Deterministic values based on index instead of random
-      const radiusVariation = (i % 3) * 6.25; // Creates variation: 0, 6.25, 12.5
-      const startRadius = 56.25 + radiusVariation;
-      const endRadius = 14.06 + (i % 2) * 4.69; // Creates variation: 0, 4.69
-
-      const startX = 100 + Math.cos(angle) * startRadius;
-      const startY = 85 + Math.sin(angle) * startRadius;
-      const endX = 100 + Math.cos(angle) * endRadius;
-      const endY = 85 + Math.sin(angle) * endRadius;
-
-      return (
-        <motion.circle
-          key={i}
-          cx={startX}
-          cy={startY}
-          r={1.41 + (i % 4) * 0.23 + audioIntensity * 1.5} // Deterministic size variation
-          fill="rgba(255, 255, 255, 0.8)"
-          initial={{ opacity: 0 }}
-          animate={{
-            x: [0, endX - startX],
-            y: [0, endY - startY],
-            opacity: [0, 0.8, 0],
-            scale: [1, 0.5],
-          }}
-          transition={{
-            duration: 1.5 + (i % 3) * 0.17, // Deterministic duration variation
-            repeat: Number.POSITIVE_INFINITY,
-            delay: i * 0.2 * speedMultiplier,
-            ease: "easeIn",
-          }}
-        />
-      );
-    })}
 
     {/* Attentive "eye" */}
     <motion.circle
