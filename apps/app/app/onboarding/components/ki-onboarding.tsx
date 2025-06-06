@@ -323,7 +323,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
             <div className="relative">
               {/* Main bubble with landing page styling */}
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-800 relative pointer-events-auto p-6 md:p-8"
+                className="bg-white dark:bg-gray-900/95 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-600/30 relative pointer-events-auto p-6 md:p-8 backdrop-blur-sm"
                 style={{
                   boxShadow: "0 4px 25px rgba(168, 85, 247, 0.15)",
                   minHeight: "80px",
@@ -333,7 +333,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                 }}
               >
                 {/* Subtle gradient overlay matching landing page */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-800 rounded-2xl opacity-50" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-white dark:from-purple-500/10 dark:to-blue-500/5 rounded-2xl opacity-50" />
 
                 {/* Content container */}
                 <div className="relative z-10 overflow-auto max-h-[280px] scrollbar-hide">
