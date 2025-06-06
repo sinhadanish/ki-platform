@@ -5,78 +5,128 @@ import { motion } from 'framer-motion';
 import { Ki, SpeechBubble } from '@repo/design-system';
 import { Button } from '@repo/design-system/components/ui/button';
 import { Input } from '@repo/design-system/components/ui/input';
-import { Heart, ArrowRight, MapPin, Calendar, Users, Sparkles, Send } from 'lucide-react';
-import { ImprovedVoiceTextInput } from '../../../components/ImprovedVoiceTextInput';
+import { Heart, ArrowRight, MapPin, Calendar, Users, Sparkles, Send, Save, Clock } from 'lucide-react';
+import { EnhancedVoiceTextInput } from '../../../components/EnhancedVoiceTextInput';
 import { ThemeToggle } from '../../../components/ThemeToggle';
+import { useOnboardingProgress, OnboardingData } from '../../../hooks/useOnboardingProgress';
+import { ProgressResumeModal } from './progress-resume-modal';
+import { useAdaptiveMessages, MessageContext } from '../../../hooks/useAdaptiveMessages';
+import { usePerformanceOptimization } from '../../../hooks/usePerformanceOptimization';
+import { useOfflineMode } from '../../../hooks/useOfflineMode';
+import { OfflineIndicator } from '../../../components/OfflineIndicator';
 
-type OnboardingData = {
-  name: string;
-  age: string;
-  location: string;
-  relationshipStatus: 'dating' | 'engaged' | 'married' | 'partnered' | '';
-  relationshipLength: string;
-  goals: string[];
-  partnerEmail?: string;
-};
+
+type KiEmotion = 'curious' | 'excited' | 'empathetic' | 'encouraging' | 'welcoming' | 'thoughtful' | 'celebratory';
 
 type Step = {
   id: string;
   kiState: 'idle' | 'listening' | 'thinking' | 'speaking';
+  emotion: KiEmotion;
   message: string;
   inputType: 'text' | 'select' | 'multiselect' | 'email' | 'none';
   options?: Array<{ value: string; label: string; emoji: string }>;
   field: keyof OnboardingData | null;
+  canSkip?: boolean;
+  gesture?: 'wave' | 'nod' | 'heart' | 'thumbsUp' | 'thinking';
 };
 
 export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData) => void }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const {
+    data,
+    savedProgress,
+    currentStep,
+    hasSavedProgress,
+    updateData,
+    updateCurrentStep,
+    markStepCompleted,
+    saveProgress,
+    loadProgress,
+    clearProgress
+  } = useOnboardingProgress();
+  
   const [isTyping, setIsTyping] = useState(false);
   const [showInput, setShowInput] = useState(false);
-  const [data, setData] = useState<OnboardingData>({
-    name: '',
-    age: '',
-    location: '',
-    relationshipStatus: '',
-    relationshipLength: '',
-    goals: [],
-    partnerEmail: ''
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  const [showAutoSave, setShowAutoSave] = useState(false);
+  const [showMotivation, setShowMotivation] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [screenHeight, setScreenHeight] = useState(0);
+  const [messageContext, setMessageContext] = useState<MessageContext>({
+    timeOfDay: 'morning',
+    isReturningUser: false,
+    completedSteps: [],
+    userTone: 'friendly',
+    deviceType: 'desktop'
   });
+
+  // Initialize adaptive messaging
+  const adaptiveMessages = useAdaptiveMessages(data, messageContext);
+  
+  // Initialize performance optimization
+  const { optimizedConfig, preloadCriticalAssets, measurePerformance } = usePerformanceOptimization();
+  
+  // Initialize offline mode
+  const { 
+    isOnline, 
+    hasOfflineData, 
+    saveOfflineData, 
+    syncOfflineData, 
+    clearOfflineData,
+    getOfflineCapabilities 
+  } = useOfflineMode();
+  
+  // Preload critical assets on mount
+  useEffect(() => {
+    preloadCriticalAssets();
+  }, [preloadCriticalAssets]);
 
   const steps: Step[] = [
     {
       id: 'welcome',
       kiState: 'idle',
-      message: "Ready to strengthen your relationship? 💕",
+      emotion: 'welcoming',
+      message: adaptiveMessages.getWelcomeMessage().message,
       inputType: 'none',
-      field: null
+      field: null,
+      gesture: 'wave'
     },
     {
       id: 'name',
       kiState: 'listening',
-      message: "I'm Ki. What's your name?",
+      emotion: 'curious',
+      message: adaptiveMessages.getStepMessage('name', data).message,
       inputType: 'text',
-      field: 'name'
+      field: 'name',
+      canSkip: false
     },
     {
       id: 'age',
       kiState: 'thinking',
-      message: `Nice to meet you, ${data.name}! How old are you?`,
+      emotion: 'excited',
+      message: adaptiveMessages.getStepMessage('age', data).message,
       inputType: 'text',
-      field: 'age'
+      field: 'age',
+      canSkip: true,
+      gesture: 'nod'
     },
     {
       id: 'location',
       kiState: 'listening',
-      message: "Where are you located?",
+      emotion: 'curious',
+      message: adaptiveMessages.getStepMessage('location', data).message,
       inputType: 'text',
-      field: 'location'
+      field: 'location',
+      canSkip: true
     },
     {
       id: 'relationship',
       kiState: 'thinking',
-      message: "Tell me about your relationship status",
+      emotion: 'empathetic',
+      message: adaptiveMessages.getStepMessage('relationship', data).message,
       inputType: 'select',
       field: 'relationshipStatus',
+      canSkip: false,
       options: [
         { value: 'dating', label: 'Dating', emoji: '💕' },
         { value: 'partnered', label: 'Partnered', emoji: '💑' },
@@ -87,16 +137,21 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     {
       id: 'length',
       kiState: 'listening',
-      message: "How long have you been together?",
+      emotion: 'thoughtful',
+      message: adaptiveMessages.getStepMessage('length', data).message,
       inputType: 'text',
-      field: 'relationshipLength'
+      field: 'relationshipLength',
+      canSkip: true
     },
     {
       id: 'goals',
       kiState: 'thinking',
-      message: "What would you like to work on together?",
+      emotion: 'encouraging',
+      message: adaptiveMessages.getStepMessage('goals', data).message,
       inputType: 'multiselect',
       field: 'goals',
+      canSkip: false,
+      gesture: 'heart',
       options: [
         { value: 'communication', label: 'Better Communication', emoji: '💬' },
         { value: 'conflict', label: 'Resolve Conflicts', emoji: '🤝' },
@@ -109,28 +164,82 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     {
       id: 'partner',
       kiState: 'speaking',
-      message: "Would you like to invite your partner to join Ki?",
+      emotion: 'encouraging',
+      message: adaptiveMessages.getStepMessage('partner', data).message,
       inputType: 'email',
-      field: 'partnerEmail'
+      field: 'partnerEmail',
+      canSkip: true
     },
     {
       id: 'complete',
       kiState: 'idle',
-      message: `Welcome to Ki, ${data.name}! I'm here to help you both grow stronger together. Let's begin your journey ✨`,
+      emotion: 'celebratory',
+      message: adaptiveMessages.getStepMessage('complete', data).message,
       inputType: 'none',
-      field: null
+      field: null,
+      gesture: 'thumbsUp'
     }
   ];
 
   const currentStepData = steps[currentStep];
   const [inputValue, setInputValue] = useState('');
 
+  // Check for mobile and screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      setScreenHeight(window.innerHeight);
+    };
+    
+    // Determine time of day
+    const getTimeOfDay = () => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return 'morning';
+      if (hour >= 12 && hour < 17) return 'afternoon';
+      if (hour >= 17 && hour < 21) return 'evening';
+      return 'night';
+    };
+    
+    checkMobile();
+    
+    setMessageContext(prev => ({
+      ...prev,
+      timeOfDay: getTimeOfDay(),
+      deviceType: window.innerWidth < 768 ? 'mobile' : 'desktop',
+      isReturningUser: hasSavedProgress,
+      completedSteps: data.completedSteps
+    }));
+    
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [hasSavedProgress, data.completedSteps]);
+  
+  // Check for saved progress on mount
+  useEffect(() => {
+    if (hasSavedProgress && savedProgress && savedProgress.name) {
+      setShowResumeModal(true);
+    }
+  }, [hasSavedProgress, savedProgress]);
+  
   // Auto-advance welcome step
   useEffect(() => {
-    if (currentStep === 0) {
+    if (currentStep === 0 && !showResumeModal) {
       const timer = setTimeout(() => {
-        setCurrentStep(1);
+        updateCurrentStep(1);
       }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, showResumeModal, updateCurrentStep]);
+  
+  // Show motivational messages periodically
+  useEffect(() => {
+    if (currentStep > 2 && currentStep < steps.length - 1) {
+      const timer = setTimeout(() => {
+        setShowMotivation(true);
+        setTimeout(() => setShowMotivation(false), 4000);
+      }, 10000); // Show after 10 seconds on a step
+      
       return () => clearTimeout(timer);
     }
   }, [currentStep]);
@@ -159,11 +268,34 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
 
     // Update data immediately
     if (currentStepData.field) {
-      setData(prev => ({
-        ...prev,
-        [currentStepData.field!]: valueToSubmit
-      }));
+      updateData(currentStepData.field, valueToSubmit);
     }
+    
+    // Mark step as completed
+    markStepCompleted(currentStepData.id);
+    
+    // Save progress (online and offline)
+    saveProgress();
+    
+    // Save offline backup if available
+    if (!isOnline) {
+      saveOfflineData({
+        ...data,
+        [currentStepData.field!]: valueToSubmit,
+        completedSteps: [...data.completedSteps, currentStepData.id],
+        lastActiveStep: currentStep + 1
+      });
+    }
+    
+    // Show auto-save indicator with success message
+    setShowAutoSave(true);
+    setTimeout(() => setShowAutoSave(false), 2000);
+    
+    // Update message context with completion
+    setMessageContext(prev => ({
+      ...prev,
+      completedSteps: [...prev.completedSteps, currentStepData.id]
+    }));
 
     // Clear input and hide immediately for better UX
     setInputValue('');
@@ -172,8 +304,9 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
     // Small delay to ensure smooth transition and prevent rapid state updates
     setTimeout(() => {
       if (currentStep < steps.length - 1) {
-        setCurrentStep(currentStep + 1);
+        updateCurrentStep(currentStep + 1);
       } else {
+        clearProgress(); // Clear saved progress on completion
         onComplete(data);
       }
     }, 300);
@@ -187,18 +320,17 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           ? currentGoals.filter(g => g !== value)
           : [...currentGoals, value];
         
-        setData(prev => ({ ...prev, goals: newGoals }));
+        updateData('goals', newGoals);
       } else {
-        setData(prev => ({
-          ...prev,
-          [currentStepData.field!]: value
-        }));
+        updateData(currentStepData.field, value);
+        markStepCompleted(currentStepData.id);
+        saveProgress();
         
         // Auto-advance for single select
         setTimeout(() => {
           setShowInput(false);
           if (currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1);
+            updateCurrentStep(currentStep + 1);
           }
         }, 500);
       }
@@ -207,17 +339,103 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
 
   const handleMultiselectContinue = () => {
     if (data.goals.length > 0) {
+      markStepCompleted(currentStepData.id);
+      saveProgress();
       setShowInput(false);
       if (currentStep < steps.length - 1) {
-        setCurrentStep(currentStep + 1);
+        updateCurrentStep(currentStep + 1);
       }
+    }
+  };
+  
+  const handleResumeProgress = () => {
+    loadProgress();
+    setShowResumeModal(false);
+  };
+  
+  const handleStartOver = () => {
+    clearProgress();
+    clearOfflineData();
+    setShowResumeModal(false);
+  };
+  
+  const handleSyncOfflineData = async () => {
+    setIsSyncing(true);
+    try {
+      await syncOfflineData();
+    } catch (error) {
+      console.error('Failed to sync offline data:', error);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900 overflow-hidden relative transition-colors duration-500">
-      {/* Theme Toggle */}
-      <ThemeToggle />
+    <>
+      {/* Progress Resume Modal */}
+      <ProgressResumeModal
+        isOpen={showResumeModal}
+        savedProgress={savedProgress!}
+        onResume={handleResumeProgress}
+        onStartOver={handleStartOver}
+        onClose={() => setShowResumeModal(false)}
+      />
+      
+      <div className={`min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900 overflow-hidden relative transition-colors duration-500 ${isMobile ? 'pb-safe-area-inset-bottom' : ''}`}>
+        {/* Theme Toggle */}
+        <div className={isMobile ? 'absolute top-4 left-4 z-30' : ''}>
+          <ThemeToggle />
+        </div>
+        
+        {/* Offline Indicator */}
+        <OfflineIndicator
+          isOnline={isOnline}
+          hasOfflineData={hasOfflineData}
+          isSyncing={isSyncing}
+          onSync={handleSyncOfflineData}
+          onClearOfflineData={clearOfflineData}
+        />
+        
+        {/* Auto-save Indicator with Adaptive Message */}
+        {showAutoSave && (
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            className="fixed top-4 right-4 z-30 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center space-x-2"
+          >
+            <Save className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {adaptiveMessages.getSuccessMessage('progress-saved').message}
+            </span>
+          </motion.div>
+        )}
+        
+        {/* Motivational Message */}
+        {currentStep > 2 && currentStep < steps.length - 1 && showInput && isOnline && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-20 right-4 z-20 bg-purple-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-2xl shadow-lg max-w-xs"
+          >
+            <p className="text-sm font-medium">
+              {adaptiveMessages.getMotivationalMessage().message}
+            </p>
+          </motion.div>
+        )}
+        
+        {/* Offline Capabilities Notice */}
+        {!isOnline && showInput && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-20 left-4 right-4 z-20 bg-blue-500/90 backdrop-blur-sm text-white px-4 py-3 rounded-2xl shadow-lg mx-auto max-w-md"
+          >
+            <p className="text-sm font-medium text-center">
+              📶 Offline Mode: Your progress is being saved locally and will sync when you're back online!
+            </p>
+          </motion.div>
+        )}
       {/* Enhanced animated background with multiple layers */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Primary floating orbs */}
@@ -265,8 +483,8 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           }}
         />
 
-        {/* Floating particles */}
-        {[...Array(12)].map((_, i) => {
+        {/* Floating particles - performance optimized */}
+        {!optimizedConfig.reduceMotion && [...Array(optimizedConfig.particleCount)].map((_, i) => {
           // Create deterministic "random" values based on index
           const leftPosition = (i * 17 + 23) % 100; // Pseudo-random distribution
           const topPosition = (i * 31 + 47) % 100;  // Different pattern
@@ -286,8 +504,8 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                 opacity: [0, 1, 0],
               }}
               transition={{
-                duration,
-                repeat: Infinity,
+                duration: optimizedConfig.reduceMotion ? 0 : duration * optimizedConfig.animationDuration,
+                repeat: optimizedConfig.reduceMotion ? 0 : Infinity,
                 delay,
               }}
             />
@@ -298,10 +516,10 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
         <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-purple-100/20 dark:from-black/20 dark:via-transparent dark:to-purple-900/10 pointer-events-none" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+      <div className={`relative z-10 flex flex-col items-center ${isMobile ? 'justify-start pt-16' : 'justify-center'} min-h-screen px-4`}>
         {/* Ki Avatar and Speech - Enhanced with dramatic styling */}
         <motion.div 
-          className="flex flex-col items-center space-y-8 max-w-3xl mx-auto"
+          className={`flex flex-col items-center ${isMobile ? 'space-y-4' : 'space-y-8'} max-w-3xl mx-auto`}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -323,23 +541,23 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
             <div className="relative">
               {/* Main bubble with landing page styling */}
               <div
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-800 relative pointer-events-auto p-6 md:p-8"
+                className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-purple-100 dark:border-purple-800 relative pointer-events-auto ${isMobile ? 'p-4' : 'p-6 md:p-8'}`}
                 style={{
                   boxShadow: "0 4px 25px rgba(168, 85, 247, 0.15)",
-                  minHeight: "80px",
-                  maxHeight: "400px",
-                  minWidth: "300px",
-                  maxWidth: "450px",
+                  minHeight: isMobile ? "60px" : "80px",
+                  maxHeight: isMobile ? "200px" : "400px",
+                  minWidth: isMobile ? "280px" : "300px",
+                  maxWidth: isMobile ? "320px" : "450px",
                 }}
               >
                 {/* Subtle gradient overlay matching landing page */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-800 rounded-2xl opacity-50" />
 
                 {/* Content container */}
-                <div className="relative z-10 overflow-auto max-h-[280px] scrollbar-hide">
-                  <div className="font-medium text-gray-800 dark:text-gray-200 text-lg md:text-xl text-center leading-relaxed">
+                <div className={`relative z-10 overflow-auto ${isMobile ? 'max-h-[120px]' : 'max-h-[280px]'} scrollbar-hide`}>
+                  <div className={`font-medium text-gray-800 dark:text-gray-200 ${isMobile ? 'text-base' : 'text-lg md:text-xl'} text-center leading-relaxed`}>
                     <div className="flex flex-wrap justify-center">
-                      {currentStepData.message.split(" ").filter(Boolean).map((word, index) => (
+                      {(currentStepData.message || '').split(" ").filter(Boolean).map((word, index) => (
                         <motion.span
                           key={`${word}-${index}`}
                           className="inline-block mr-1.5 mb-1"
@@ -435,25 +653,146 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
               }}
             />
 
-            {/* Ki Avatar */}
-            <Ki
-              state={isTyping ? 'thinking' : currentStepData.kiState}
-              size="large"
-              theme="default"
-              enhancedGlow={true}
-              autoCycle={false}
-              audioIntensity={0.8}
-              className="relative z-10 drop-shadow-2xl w-[24rem] h-[24rem] md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem]"
-            />
+            {/* Enhanced Ki Avatar with Emotions */}
+            <motion.div
+              className="relative"
+              animate={{
+                scale: currentStepData.emotion === 'excited' ? [1, 1.05, 1] : 
+                       currentStepData.emotion === 'celebratory' ? [1, 1.1, 1] : 1,
+                rotate: currentStepData.gesture === 'nod' ? [0, 5, -5, 0] : 0
+              }}
+              transition={{
+                duration: currentStepData.emotion === 'excited' ? 2 : 
+                         currentStepData.emotion === 'celebratory' ? 1.5 : 0,
+                repeat: currentStepData.emotion === 'excited' || currentStepData.emotion === 'celebratory' ? Infinity : 0,
+                ease: "easeInOut"
+              }}
+            >
+              <Ki
+                state={isTyping ? 'thinking' : currentStepData.kiState}
+                size={isMobile ? "medium" : "large"}
+                theme="default"
+                enhancedGlow={true}
+                autoCycle={false}
+                audioIntensity={0.8}
+                className={`relative z-10 drop-shadow-2xl ${
+                  isMobile 
+                    ? 'w-[16rem] h-[16rem] sm:w-[18rem] sm:h-[18rem]' 
+                    : 'w-[24rem] h-[24rem] md:w-[28rem] md:h-[28rem] lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem]'
+                }`}
+              />
+              
+              {/* Breathing Animation */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                animate={{
+                  scale: [1, 1.02, 1],
+                  opacity: [0.3, 0.1, 0.3]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10 blur-3xl" />
+              </motion.div>
+
+              {/* Emotion-based Glow Effects */}
+              <motion.div
+                className={`
+                  absolute inset-0 rounded-full blur-2xl scale-150 transition-all duration-1000
+                  ${currentStepData.emotion === 'welcoming' ? 'bg-gradient-to-r from-green-400/30 to-blue-400/30' :
+                    currentStepData.emotion === 'curious' ? 'bg-gradient-to-r from-yellow-400/20 to-orange-400/20' :
+                    currentStepData.emotion === 'excited' ? 'bg-gradient-to-r from-pink-400/30 to-purple-400/30' :
+                    currentStepData.emotion === 'empathetic' ? 'bg-gradient-to-r from-blue-400/25 to-cyan-400/25' :
+                    currentStepData.emotion === 'encouraging' ? 'bg-gradient-to-r from-green-400/25 to-emerald-400/25' :
+                    currentStepData.emotion === 'thoughtful' ? 'bg-gradient-to-r from-indigo-400/20 to-blue-400/20' :
+                    currentStepData.emotion === 'celebratory' ? 'bg-gradient-to-r from-yellow-400/40 to-pink-400/40' :
+                    'bg-gradient-to-r from-purple-400/20 to-blue-400/20'
+                  }
+                `}
+                animate={{
+                  scale: currentStepData.emotion === 'celebratory' ? [1.5, 1.8, 1.5] : [1.5, 1.6, 1.5],
+                  opacity: currentStepData.emotion === 'excited' ? [0.4, 0.7, 0.4] : [0.3, 0.5, 0.3]
+                }}
+                transition={{
+                  duration: currentStepData.emotion === 'celebratory' ? 1 : 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+
+              {/* Gesture Animations */}
+              {currentStepData.gesture === 'wave' && (
+                <motion.div
+                  className="absolute top-1/4 right-1/4 w-8 h-8 bg-yellow-400 rounded-full shadow-lg"
+                  animate={{
+                    x: [0, 15, -15, 0],
+                    y: [0, -10, 5, 0],
+                    scale: [0.8, 1.2, 0.8]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: 2,
+                    ease: "easeInOut"
+                  }}
+                />
+              )}
+
+              {currentStepData.gesture === 'heart' && (
+                <motion.div
+                  className="absolute top-1/3 left-1/2 transform -translate-x-1/2"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 3,
+                    ease: "easeOut"
+                  }}
+                >
+                  <Heart className="w-6 h-6 text-red-400 fill-current" />
+                </motion.div>
+              )}
+
+              {currentStepData.gesture === 'thumbsUp' && (
+                <motion.div
+                  className="absolute top-1/4 left-1/4 w-6 h-6 bg-green-400 rounded-full shadow-lg flex items-center justify-center"
+                  animate={{
+                    y: [0, -20, 0],
+                    scale: [1, 1.3, 1]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: 3,
+                    ease: "easeOut"
+                  }}
+                >
+                  <span className="text-white text-xs font-bold">✓</span>
+                </motion.div>
+              )}
+            </motion.div>
             
-            {/* Orbiting particles around Ki */}
-            {[...Array(8)].map((_, i) => {
-              const angle = (i * 45) * (Math.PI / 180);
-              const radius = 200;
+            {/* Emotion-responsive orbiting particles */}
+            {[...Array(currentStepData.emotion === 'celebratory' ? (isMobile ? 8 : 12) : (isMobile ? 6 : 8))].map((_, i) => {
+              const particleCount = currentStepData.emotion === 'celebratory' ? (isMobile ? 8 : 12) : (isMobile ? 6 : 8);
+              const angle = (i * (360 / particleCount)) * (Math.PI / 180);
+              const baseRadius = isMobile ? 120 : 200;
+              const radius = currentStepData.emotion === 'excited' ? baseRadius + 20 : baseRadius;
+              const particleColor = currentStepData.emotion === 'welcoming' ? 'bg-green-400/60' :
+                                   currentStepData.emotion === 'curious' ? 'bg-yellow-400/60' :
+                                   currentStepData.emotion === 'excited' ? 'bg-pink-400/60' :
+                                   currentStepData.emotion === 'empathetic' ? 'bg-blue-400/60' :
+                                   currentStepData.emotion === 'encouraging' ? 'bg-green-400/60' :
+                                   currentStepData.emotion === 'thoughtful' ? 'bg-indigo-400/60' :
+                                   currentStepData.emotion === 'celebratory' ? 'bg-yellow-400/80' :
+                                   'bg-white/60';
+              
               return (
                 <motion.div
-                  key={i}
-                  className="absolute w-3 h-3 bg-white/60 rounded-full shadow-lg"
+                  key={`${currentStepData.emotion}-${i}`}
+                  className={`absolute ${isMobile ? 'w-2 h-2' : 'w-3 h-3'} ${particleColor} rounded-full shadow-lg`}
                   style={{
                     left: '50%',
                     top: '50%',
@@ -471,14 +810,15 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                       Math.sin(angle + Math.PI) * radius,
                       Math.sin(angle + 2 * Math.PI) * radius,
                     ],
-                    scale: [0.5, 1, 0.5],
-                    opacity: [0.3, 1, 0.3],
+                    scale: currentStepData.emotion === 'celebratory' ? [0.3, 1.5, 0.3] : [0.5, 1, 0.5],
+                    opacity: currentStepData.emotion === 'celebratory' ? [0.5, 1, 0.5] : [0.3, 1, 0.3],
                   }}
                   transition={{
-                    duration: 15,
+                    duration: currentStepData.emotion === 'excited' ? 12 : 
+                             currentStepData.emotion === 'celebratory' ? 8 : 15,
                     repeat: Infinity,
                     ease: "linear",
-                    delay: i * 0.5,
+                    delay: i * 0.3,
                   }}
                 />
               );
@@ -486,43 +826,77 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
           </motion.div>
         </motion.div>
 
+        {/* Skip Button for Optional Steps */}
+        {showInput && currentStepData.canSkip && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`absolute ${isMobile ? 'top-2 right-2' : 'top-4 right-4'} z-20`}
+          >
+            <Button
+              onClick={() => {
+                markStepCompleted(currentStepData.id);
+                saveProgress();
+                setShowInput(false);
+                setTimeout(() => {
+                  if (currentStep < steps.length - 1) {
+                    updateCurrentStep(currentStep + 1);
+                  }
+                }, 300);
+              }}
+              variant="ghost"
+              className={`text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl font-medium transition-all duration-200 ${
+                isMobile ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm'
+              }`}
+            >
+              Skip for now
+            </Button>
+          </motion.div>
+        )}
+
         {/* Enhanced Input Section with Voice/Text Support */}
         {showInput && (
           <motion.div 
-            className="w-full max-w-2xl space-y-8"
+            className={`w-full ${isMobile ? 'max-w-sm px-2' : 'max-w-2xl'} ${isMobile ? 'space-y-4' : 'space-y-8'}`}
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
             {/* Voice/Text Input with Enhanced Interface */}
             {currentStepData.inputType === 'text' && (
-              <div className="space-y-6">
-                <ImprovedVoiceTextInput
+              <div className={isMobile ? 'space-y-3' : 'space-y-6'}>
+                <EnhancedVoiceTextInput
                   onSendMessage={(message, mode) => {
                     handleInputSubmit(message)
                   }}
                   placeholder={
-                    currentStepData.field === 'name' ? 'Tell me your name or type it...' :
-                    currentStepData.field === 'age' ? 'Your age (speak or type)...' :
-                    currentStepData.field === 'location' ? 'Where are you located?' :
-                    'Your answer (speak or type)...'
+                    currentStepData.field === 'name' ? (isMobile ? 'Your name...' : 'Tell me your name or type it...') :
+                    currentStepData.field === 'age' ? (isMobile ? 'Your age...' : 'Your age (speak or type)...') :
+                    currentStepData.field === 'location' ? (isMobile ? 'Your location...' : 'Where are you located?') :
+                    (isMobile ? 'Your answer...' : 'Your answer (speak or type)...')
                   }
-                  className="max-w-2xl mx-auto"
-                  isMobile={false}
+                  className={isMobile ? 'w-full' : 'max-w-2xl mx-auto'}
+                  isMobile={isMobile}
+                  enablePreview={!isMobile && isOnline}
+                  minConfidence={0.6}
+                  disabled={!isOnline && !getOfflineCapabilities().canUseVoiceInput}
                 />
               </div>
             )}
 
             {/* Email Input with Voice/Text Support */}
             {currentStepData.inputType === 'email' && (
-              <div className="space-y-6">
-                <ImprovedVoiceTextInput
+              <div className={isMobile ? 'space-y-3' : 'space-y-6'}>
+                <EnhancedVoiceTextInput
                   onSendMessage={(message, mode) => {
                     handleInputSubmit(message)
                   }}
-                  placeholder="Partner's email (speak or type, optional)"
-                  className="max-w-2xl mx-auto"
-                  isMobile={false}
+                  placeholder={isMobile ? "Partner's email (optional)" : "Partner's email (speak or type, optional)"}
+                  className={isMobile ? 'w-full' : 'max-w-2xl mx-auto'}
+                  isMobile={isMobile}
+                  enablePreview={false}
+                  minConfidence={0.8}
+                  disabled={!isOnline && !getOfflineCapabilities().canUseVoiceInput}
                 />
 
                 <div className="flex gap-4">
@@ -547,8 +921,8 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
 
             {/* Enhanced Select Options with Glass Morphism */}
             {(currentStepData.inputType === 'select' || currentStepData.inputType === 'multiselect') && (
-              <div className="space-y-6">
-                <div className="grid gap-6">
+              <div className={isMobile ? 'space-y-3' : 'space-y-6'}>
+                <div className={`grid ${isMobile ? 'gap-3' : 'gap-6'}`}>
                   {currentStepData.options?.map((option, index) => {
                     const isSelected = currentStepData.inputType === 'multiselect' 
                       ? data.goals.includes(option.value)
@@ -570,7 +944,9 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                       >
                         <Button
                           onClick={() => handleSelectOption(option.value)}
-                          className={`relative h-auto py-6 px-8 text-left rounded-3xl transition-all duration-500 w-full overflow-hidden ${
+                          className={`relative h-auto text-left rounded-3xl transition-all duration-500 w-full overflow-hidden ${
+                            isMobile ? 'py-4 px-6' : 'py-6 px-8'
+                          } ${
                             isSelected 
                               ? 'bg-gradient-to-r from-purple-500/90 via-blue-500/90 to-green-500/90 text-white shadow-2xl border border-purple-300/50 dark:border-white/30 backdrop-blur-xl transform scale-105' 
                               : 'bg-white/80 dark:bg-white/10 backdrop-blur-xl border border-gray-200/50 dark:border-white/20 text-gray-800 dark:text-white hover:bg-white/90 dark:hover:bg-white/20 shadow-xl hover:shadow-2xl'
@@ -597,7 +973,7 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                           <div className="relative flex items-center gap-6">
                             {/* Enhanced emoji container */}
                             <motion.div 
-                              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+                              className={`${isMobile ? 'w-12 h-12 rounded-xl' : 'w-16 h-16 rounded-2xl'} flex items-center justify-center transition-all duration-500 ${
                                 isSelected 
                                   ? 'bg-white/20 backdrop-blur-sm shadow-lg' 
                                   : 'bg-gray-100/80 dark:bg-white/10 backdrop-blur-sm group-hover:bg-gray-200/80 dark:group-hover:bg-white/20'
@@ -612,11 +988,13 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
                                 ease: "easeInOut"
                               }}
                             >
-                              <span className="text-3xl">{option.emoji}</span>
+                              <span className={isMobile ? 'text-2xl' : 'text-3xl'}>{option.emoji}</span>
                             </motion.div>
 
                             <div className="flex-1">
-                              <span className={`font-bold text-xl transition-colors ${isSelected ? 'text-white' : 'text-gray-800 dark:text-white'}`}>
+                              <span className={`font-bold transition-colors ${isSelected ? 'text-white' : 'text-gray-800 dark:text-white'} ${
+                                isMobile ? 'text-lg' : 'text-xl'
+                              }`}>
                                 {option.label}
                               </span>
                             </div>
@@ -753,8 +1131,10 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
         )}
 
         {/* Progress Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <div className="relative flex items-center gap-3 px-6 py-3 bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg border border-gray-200/50 dark:border-purple-700/50">
+        <div className={`absolute ${isMobile ? 'bottom-4' : 'bottom-8'} left-1/2 transform -translate-x-1/2`}>
+          <div className={`relative flex items-center bg-white/90 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-lg border border-gray-200/50 dark:border-purple-700/50 ${
+            isMobile ? 'gap-2 px-4 py-2' : 'gap-3 px-6 py-3'
+          }`}>
             {steps.map((_, index) => (
               <div key={index} className="relative">
                 <div
@@ -778,13 +1158,13 @@ export const KiOnboarding = ({ onComplete }: { onComplete: (data: OnboardingData
             ))}
             
             {/* Progress text */}
-            <div className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className={`${isMobile ? 'ml-1 text-xs' : 'ml-2 text-sm'} font-medium text-gray-700 dark:text-gray-300`}>
               {currentStep + 1} of {steps.length}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

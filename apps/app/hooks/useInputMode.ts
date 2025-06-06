@@ -7,6 +7,8 @@ type InputMode = 'idle' | 'typing' | 'listening' | 'processing'
 interface UseInputModeOptions {
   onSendMessage: (message: string, mode: 'voice' | 'text') => void
   disabled?: boolean
+  minConfidence?: number
+  autoSend?: boolean
 }
 
 interface UseInputModeReturn {
@@ -16,6 +18,7 @@ interface UseInputModeReturn {
   interimTranscript: string
   isVoiceSupported: boolean
   error: string | null
+  confidence: number
   setTextInput: (text: string) => void
   startTyping: () => void
   startListening: () => void
@@ -26,16 +29,23 @@ interface UseInputModeReturn {
   handleKeyPress: (e: React.KeyboardEvent) => void
 }
 
-export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOptions): UseInputModeReturn {
+export function useInputMode({ 
+  onSendMessage, 
+  disabled = false, 
+  minConfidence = 0.7,
+  autoSend = true 
+}: UseInputModeOptions): UseInputModeReturn {
   const [inputMode, setInputMode] = useState<InputMode>('idle')
   const [textInput, setTextInput] = useState('')
   const [voiceTranscript, setVoiceTranscript] = useState('')
   const [interimTranscript, setInterimTranscript] = useState('')
   const [isVoiceSupported, setIsVoiceSupported] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [confidence, setConfidence] = useState(1)
 
   const recognitionRef = useRef<SpeechRecognition | null>(null)
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Initialize speech recognition
   useEffect(() => {
@@ -68,14 +78,40 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
         }
 
         recognition.onerror = (event) => {
-          setError(`Speech recognition error: ${event.error}`)
+          let errorMessage = 'Speech recognition error'
+          
+          switch (event.error) {
+            case 'network':
+              errorMessage = 'Network error - check your connection'
+              break
+            case 'not-allowed':
+              errorMessage = 'Microphone access denied'
+              break
+            case 'no-speech':
+              errorMessage = 'No speech detected - try speaking closer to microphone'
+              break
+            case 'audio-capture':
+              errorMessage = 'Microphone not found or not working'
+              break
+            case 'service-not-allowed':
+              errorMessage = 'Speech service not available'
+              break
+            default:
+              errorMessage = `Speech recognition error: ${event.error}`
+          }
+          
+          setError(errorMessage)
           setInputMode('idle')
           setInterimTranscript('')
+          setConfidence(0)
           
           if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current)
             silenceTimeoutRef.current = null
           }
+          
+          // Auto-clear error after 5 seconds
+          setTimeout(() => setError(null), 5000)
         }
 
         recognition.onresult = (event) => {
@@ -96,6 +132,12 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
           if (finalTranscript) {
             setVoiceTranscript(prev => prev + finalTranscript)
             setInterimTranscript('')
+            
+            // Get confidence from final result
+            const finalResult = event.results[event.results.length - 1]
+            if (finalResult && finalResult[0]) {
+              setConfidence(finalResult[0].confidence || 1)
+            }
           } else {
             setInterimTranscript(interimText)
           }
@@ -105,19 +147,25 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
             clearTimeout(silenceTimeoutRef.current)
           }
           
-          // Auto-stop after 1.5 seconds of silence for better UX
+          // Auto-stop after 2 seconds of silence for better UX
           silenceTimeoutRef.current = setTimeout(() => {
             if (recognitionRef.current && inputMode === 'listening') {
               recognitionRef.current.stop()
               
-              // If we have transcript, send it automatically
+              // If we have transcript and auto-send is enabled
               const finalText = voiceTranscript + finalTranscript
-              if (finalText.trim()) {
-                onSendMessage(finalText.trim(), 'voice')
-                setVoiceTranscript('')
+              if (finalText.trim() && autoSend) {
+                const currentConfidence = confidence || 1
+                
+                // Only auto-send if confidence is high enough
+                if (currentConfidence >= minConfidence) {
+                  onSendMessage(finalText.trim(), 'voice')
+                  setVoiceTranscript('')
+                  setConfidence(1)
+                }
               }
             }
-          }, 1500)
+          }, 2000)
         }
 
         recognitionRef.current = recognition
@@ -130,6 +178,9 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
     return () => {
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current)
+      }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current)
       }
     }
   }, [inputMode, voiceTranscript, onSendMessage])
@@ -205,11 +256,31 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
       setError(null)
       setVoiceTranscript('')
       setInterimTranscript('')
+      setConfidence(1)
       
       try {
         recognitionRef.current.start()
       } catch (err) {
-        setError('Failed to start speech recognition')
+        const errorMessage = err instanceof Error ? err.message : 'Failed to start speech recognition'
+        setError(errorMessage)
+        
+        // Retry after 2 seconds if it's a temporary error
+        if (errorMessage.includes('already started')) {
+          retryTimeoutRef.current = setTimeout(() => {
+            try {
+              if (recognitionRef.current) {
+                recognitionRef.current.stop()
+                setTimeout(() => {
+                  if (recognitionRef.current) {
+                    recognitionRef.current.start()
+                  }
+                }, 100)
+              }
+            } catch (retryErr) {
+              setError('Unable to start voice recognition')
+            }
+          }, 2000)
+        }
       }
     }
   }, [disabled, isVoiceSupported, inputMode])
@@ -235,10 +306,16 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
     setVoiceTranscript('')
     setInterimTranscript('')
     setError(null)
+    setConfidence(1)
     
     if (silenceTimeoutRef.current) {
       clearTimeout(silenceTimeoutRef.current)
       silenceTimeoutRef.current = null
+    }
+    
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current)
+      retryTimeoutRef.current = null
     }
   }, [inputMode])
 
@@ -285,6 +362,7 @@ export function useInputMode({ onSendMessage, disabled = false }: UseInputModeOp
     interimTranscript,
     isVoiceSupported,
     error,
+    confidence,
     setTextInput,
     startTyping,
     startListening,
