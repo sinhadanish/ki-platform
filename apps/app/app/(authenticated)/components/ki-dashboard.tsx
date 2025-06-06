@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { KiChat } from './ki-chat';
-import { KiAvatar } from '@repo/design-system/components/ki-avatar';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/design-system/components/ui/card';
+import { Ki } from '@repo/design-system';
 import { Button } from '@repo/design-system/components/ui/button';
-import { Heart, MessageCircle, Users, Sparkles } from 'lucide-react';
+import { MessageCircle, Sun, Moon, Sunset, Clock } from 'lucide-react';
 
 type View = 'dashboard' | 'chat';
 
@@ -15,6 +15,40 @@ type KiDashboardProps = {
 
 export const KiDashboard = ({ firstName }: KiDashboardProps) => {
   const [currentView, setCurrentView] = useState<View>('dashboard');
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const getTimeGreeting = () => {
+    const hour = currentTime.getHours();
+    if (hour >= 5 && hour < 12) return { greeting: 'Good Morning', icon: Sun, color: 'from-yellow-400 to-orange-400' };
+    if (hour >= 12 && hour < 17) return { greeting: 'Good Afternoon', icon: Sun, color: 'from-orange-400 to-yellow-500' };
+    if (hour >= 17 && hour < 21) return { greeting: 'Good Evening', icon: Sunset, color: 'from-orange-500 to-pink-500' };
+    return { greeting: 'Good Night', icon: Moon, color: 'from-blue-500 to-purple-500' };
+  };
+
+  const formatTime = () => {
+    return currentTime.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
+  const formatDate = () => {
+    return currentTime.toLocaleDateString('en-US', { 
+      weekday: 'long',
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
 
   if (currentView === 'chat') {
     return (
@@ -25,123 +59,178 @@ export const KiDashboard = ({ firstName }: KiDashboardProps) => {
     );
   }
 
+  const timeData = getTimeGreeting();
+  const TimeIcon = timeData.icon;
+
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
-      {/* Welcome Section */}
-      <div className="text-center space-y-4">
-        <div className="flex justify-center">
-          <KiAvatar size="medium" state="idle" showSpeechBubble={false} />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Welcome back, {firstName}! 💕
-          </h1>
-          <p className="text-lg text-muted-foreground mt-2">
-            Ready to strengthen your relationship today?
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 relative overflow-hidden">
+      {/* Subtle background effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-20 right-20 h-96 w-96 rounded-full bg-gradient-to-br from-purple-200/20 to-blue-200/20 dark:from-purple-400/10 dark:to-blue-400/10 blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-20 h-80 w-80 rounded-full bg-gradient-to-br from-pink-200/20 to-purple-200/20 dark:from-pink-400/10 dark:to-purple-400/10 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setCurrentView('chat')}>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <MessageCircle className="h-5 w-5 text-blue-500" />
-              Start Conversation
-            </CardTitle>
-            <CardDescription>
-              Talk with Ki about your relationship
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" variant="outline">
-              Begin Chat
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
+        <motion.div 
+          className="w-full max-w-2xl mx-auto text-center space-y-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          {/* Time and Date Display */}
+          <motion.div 
+            className="space-y-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <TimeIcon className={`w-8 h-8 bg-gradient-to-r ${timeData.color} bg-clip-text text-transparent`} />
+              <h1 className={`text-5xl md:text-6xl font-light bg-gradient-to-r ${timeData.color} bg-clip-text text-transparent`}>
+                {formatTime()}
+              </h1>
+            </div>
+            <p className="text-2xl md:text-3xl text-gray-600 dark:text-gray-300 font-light">
+              {formatDate()}
+            </p>
+          </motion.div>
 
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Users className="h-5 w-5 text-green-500" />
-              Partner Check-in
-            </CardTitle>
-            <CardDescription>
-              See how your partner is feeling
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" variant="outline">
-              Connect
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Personalized Greeting */}
+          <motion.div 
+            className="space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <h2 className={`text-4xl md:text-5xl font-medium bg-gradient-to-r ${timeData.color} bg-clip-text text-transparent`}>
+              {timeData.greeting}, {firstName}
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 font-light max-w-lg mx-auto leading-relaxed">
+              How are you feeling today?
+            </p>
+          </motion.div>
 
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Sparkles className="h-5 w-5 text-purple-500" />
-              Daily Insight
-            </CardTitle>
-            <CardDescription>
-              Personalized relationship tip
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" variant="outline">
-              Get Insight
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Ki Avatar */}
+          <motion.div 
+            className="flex justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <motion.div
+              className="relative"
+              animate={{ 
+                y: [0, -10, 0],
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+            >
+              {/* Soft glow around Ki */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/20 via-blue-400/20 to-green-400/20 blur-2xl scale-150"
+                animate={{
+                  scale: [1.5, 1.7, 1.5],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{ 
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              
+              <Ki
+                state="idle"
+                size="large"
+                theme="default"
+                enhancedGlow={true}
+                autoCycle={false}
+                audioIntensity={0.5}
+                className="relative z-10 w-32 h-32 md:w-40 md:h-40"
+              />
+            </motion.div>
+          </motion.div>
 
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Heart className="h-5 w-5 text-pink-500" />
-              Relationship Goals
-            </CardTitle>
-            <CardDescription>
-              Track your progress together
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" variant="outline">
-              View Goals
-            </Button>
-          </CardContent>
-        </Card>
+          {/* Talk to Ki Button */}
+          <motion.div 
+            className="pt-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-block"
+            >
+              <Button
+                onClick={() => setCurrentView('chat')}
+                className="relative group bg-gradient-to-r from-purple-600 via-blue-600 to-green-600 hover:from-purple-700 hover:via-blue-700 hover:to-green-700 text-white font-semibold px-12 py-6 rounded-full shadow-2xl text-xl md:text-2xl transition-all duration-300 overflow-hidden"
+                style={{
+                  boxShadow: "0 10px 40px rgba(147, 51, 234, 0.3)",
+                }}
+              >
+                {/* Button gradient overlay */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+                
+                {/* Button content */}
+                <span className="relative z-10 flex items-center gap-4">
+                  <MessageCircle className="w-8 h-8" />
+                  Talk to Ki
+                </span>
+
+                {/* Enhanced glow effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 blur-xl opacity-60 group-hover:opacity-80 transition-opacity duration-300 -z-10 scale-110" />
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Subtle info text */}
+          <motion.p 
+            className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-light"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+          >
+            I'm here to help strengthen your relationship ✨
+          </motion.p>
+        </motion.div>
       </div>
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>
-            Your latest interactions and insights
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <div className="flex-1">
-                <p className="font-medium">Conversation completed</p>
-                <p className="text-sm text-muted-foreground">Discussed communication styles</p>
-              </div>
-              <span className="text-sm text-muted-foreground">2h ago</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-              <div className="flex-1">
-                <p className="font-medium">Partner checked in</p>
-                <p className="text-sm text-muted-foreground">Shared daily reflection</p>
-              </div>
-              <span className="text-sm text-muted-foreground">1d ago</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
