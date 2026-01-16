@@ -20,9 +20,9 @@ export const env = createEnv({
   ],
   server: {
     // Mailchimp Integration
-    MAILCHIMP_API_KEY: z.string().min(1),
-    MAILCHIMP_SERVER_PREFIX: z.string().min(1),
-    MAILCHIMP_AUDIENCE_ID: z.string().min(1),
+    MAILCHIMP_API_KEY: z.string().optional(),
+    MAILCHIMP_SERVER_PREFIX: z.string().optional(),
+    MAILCHIMP_AUDIENCE_ID: z.string().optional(),
   },
   client: {},
   runtimeEnv: {
